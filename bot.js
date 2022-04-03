@@ -1,0 +1,25 @@
+const { Client, Intents } = require('discord.js')
+
+const client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_PRESENCES,
+    Intents.FLAGS.GUILD_MEMBERS
+  ]
+})
+require("dotenv").config()
+
+client.on('ready', async () => {
+  console.log(`Logged in as ${client.user.tag}!`)
+
+  commands.build(client.application.commands)
+})
+
+client.on('interactionCreate', interaction => {
+  if(interaction.isCommand()){
+
+  }
+})
+
+client.login(process.env.DISCORD_BOT_TOKEN)
