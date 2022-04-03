@@ -10,10 +10,13 @@ const client = new Client({
 })
 require("dotenv").config()
 
+const commands = require('./commands');
+
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
-  commands.build(client.application.commands)
+  //client.application.commands
+  commands.build(client.guilds.cache.get("960281524685660222").commands)
 })
 
 client.on('interactionCreate', interaction => {
