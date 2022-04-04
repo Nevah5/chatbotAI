@@ -11,14 +11,6 @@ var con = mysql.createConnection({
 })
 con.connect()
 
-exports.checkAPIToken = (token) => {
-  return new Promise((resolve, reject) => {
-    con.query(`SELECT token FROM apiTokens WHERE token='${token}'`, (err, result) =>{
-      resolve(result.length == 1)
-    })
-  })
-}
-
 exports.getErrorMessage = (id) => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT value FROM config WHERE ID='${id}'`, (err, result) => {

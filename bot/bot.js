@@ -12,29 +12,32 @@ const client = new Client({
 require("dotenv").config()
 const fetch = require('node-fetch')
 
-const commands = require('./commands')
-const status = require('./status')
+const commands = require('./src/commands')
+const status = require('./src/status')
+const embed = require('./src/embed')
+const db = require('./src/db')
 
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
   status.checkApi(client.user)
-  // client.application.commands
   commands.build(client.guilds.cache.get("960281524685660222").commands)
 })
 
-client.on('messageCreate', async message => {
+client.on('messageCreate', async msg => {
+  if(msg.author.bot) return
   fetch(process.env.API + '/train/', {
     method: "POST",
     headers: {
       token: 'devToken',
-      message
+      message: msg
     }
   }).then(res => {
-    if(res.status === 200) message.react('✅')
-    if(res.status === 403) message.react('❎')
+    if(res.status === 200) msg.react('✅')
+    if(res.status === 403) msg.react('❎')
   }).catch(e => {
     status.apiOffline(client.user);
+    msg.reply({embeds: [embed.error(await db.getErrorMessage)]})
   })
 })
 
