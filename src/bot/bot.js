@@ -19,6 +19,15 @@ client.on('ready', async () => {
   commands.build(client.guilds.cache.get("960281524685660222").commands)
 })
 
+client.on('messageCreate', msg => {
+  fetch('localhost:3000/train/', {
+    headers: {
+      apiToken: 'devToken'
+    },
+    body: "",
+  })
+})
+
 client.on('interactionCreate', interaction => {
   if(interaction.isCommand()){
 
