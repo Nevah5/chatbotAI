@@ -7,6 +7,7 @@ exports.checkApi = (user) => {
   })
   .catch(e => {
     this.apiOffline(user)
+    // user.setAvatar('../logo-api_noresponse.png');
   })
 }
 

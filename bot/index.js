@@ -36,7 +36,7 @@ client.on('messageCreate', async msg => {
     if(res.status === 403) msg.react('❎')
   }).catch(async e => {
     status.apiOffline(client.user);
-    msg.reply({embeds: [embed.error(await db.getErrorMessage)]})
+    msg.reply({embeds: [embed.error(await db.getErrorMessage('api_noresponse'))]})
   })
 })
 
