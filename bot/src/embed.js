@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 
 exports.error = (msg) => {
   return new MessageEmbed()
-  .setColor("#FF5F7B")
+  .setColor("#E94649")
   .setTitle("Something went wrong")
   .setDescription(msg)
 }
