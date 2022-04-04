@@ -13,6 +13,18 @@ exports.build = (commands) => {
         type: 'SUB_COMMAND'
       },
       {
+        name: 'toggle',
+        description: '...',
+        type: 'SUB_COMMAND_GROUP',
+        options: [
+          {
+            name: 'chat',
+            description: 'Sets the chat channel where the bot interacts with the users.',
+            type: 'SUB_COMMAND'
+          }
+        ]
+      },
+      {
         name: 'set',
         description: '...',
         type: 'SUB_COMMAND_GROUP',
@@ -20,11 +32,6 @@ exports.build = (commands) => {
           {
             name: 'training',
             description: 'Sets the training channel for the bot.',
-            type: 'SUB_COMMAND'
-          },
-          {
-            name: 'chat',
-            description: 'Sets the chat channel where the bot interacts with the users.',
             type: 'SUB_COMMAND'
           },
           {
@@ -95,7 +102,10 @@ exports.handler = async interaction => {
   switch(commandName){
     case "config":
       let subCmdGroup = interaction.options.getSubcommandGroup()
+      let subCmd = interaction.options.getSubcommand()
+
       if(subCmdGroup === 'set') return configSetHandler(interaction)
+      if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
       return configResetHandler(interaction)
   }
 }
@@ -104,7 +114,6 @@ configSetHandler = interaction => {
   let subCmd = interaction.options.getSubcommand()
   switch(subCmd){
     case "training":
-      //check if user has role or owner
       isAllowed(interaction).then(async _ => {
         let channelId = interaction.channel.id;
         await db.setTrainingChannel(channelId)
@@ -112,8 +121,6 @@ configSetHandler = interaction => {
       }).catch(_ => {
         interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
       })
-      break
-    case "chat":
       break
     case "api-noresponse":
       break
@@ -131,5 +138,19 @@ isAllowed = interaction => {
     if(interaction.user.id === process.env.OWNER_ID) return resolve()
     if(interaction.member.roles.cache.filter(role => role.id === process.env.BOT_ROLE_ID).size === 1) return resolve()
     reject()
+  })
+}
+
+toggleChat = async interaction => {
+  isAllowed(interaction).then(async _ => {
+    let channelId = interaction.channel.id
+    if(await db.isChat(channelId)){
+      interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
+      return await db.removeChat(channelId)
+    }
+    interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
+    db.addChat(channelId)
+  }).catch(_ => {
+    interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
   })
 }

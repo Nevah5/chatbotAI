@@ -26,3 +26,25 @@ exports.setTrainingChannel = (id) => {
     resolve()
   })
 }
+
+exports.addChat = (id) => {
+  return new Promise((resolve, reject) => {
+    con.query(`INSERT INTO chats VALUES (null, '${id}')`)
+    resolve()
+  })
+}
+
+exports.removeChat = (id) => {
+  return new Promise((resolve, reject) => {
+    con.query(`DELETE FROM chats WHERE channelId='${id}'`)
+    resolve()
+  })
+}
+
+exports.isChat = (id) => {
+  return new Promise((resolve, reject) => {
+    con.query(`SELECT * FROM chats WHERE channelId='${id}'`, (err, results) => {
+      resolve(results.length === 1)
+    })
+  })
+}
