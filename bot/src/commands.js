@@ -1,3 +1,7 @@
+const { config } = require("dotenv")
+const db = require('./db')
+const embed = require('./embed')
+
 exports.build = (commands) => {
   commands.create({
     name: 'config',
@@ -48,5 +52,50 @@ exports.build = (commands) => {
         ]
       }
     ]
+  })
+}
+
+exports.handler = async interaction => {
+  await interaction.deferReply({ephemeral: true})
+  const {commandName} = interaction
+  switch(commandName){
+    case "config":
+      let subCmdGroup = interaction.options.getSubcommandGroup()
+      if(subCmdGroup === 'set') return configSetHandler(interaction)
+      return configResetHandler(interaction)
+  }
+}
+
+configSetHandler = interaction => {
+  let subCmd = interaction.options.getSubcommand()
+  switch(subCmd){
+    case "training":
+      //check if user has role or owner
+      isAllowed(interaction).then(_ => {
+        //check if already a training channel exists
+        //update training channel in database
+        //return embed
+      }).catch(_ => {
+        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
+      })
+      break
+    case "chat":
+      break
+    case "api-noresponse":
+      break
+    case "api-noresponse_status":
+      break
+  }
+}
+
+configResetHandler = interaction => {
+
+}
+
+isAllowed = interaction => {
+  return new Promise((resolve, reject) => {
+    if(interaction.user.id === process.env.OWNER_ID) return resolve()
+    if(interaction.member.roles.cache.filter(role => role.id === process.env.BOT_ROLE_ID).size === 1) return resolve()
+    reject()
   })
 }

@@ -9,7 +9,6 @@ const client = new Client({
   ]
 })
 require("dotenv").config()
-const fetch = require('node-fetch')
 
 const commands = require('./src/commands')
 const status = require('./src/status')
@@ -24,7 +23,7 @@ client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
   status.checkApi(client.user)
-  commands.build(client.guilds.cache.get("960281524685660222").commands)
+  commands.build(client.guilds.cache.get(process.env.HUB_SERVER).commands)
 })
 
 // client.on('messageCreate', async msg => {
@@ -43,9 +42,7 @@ client.on('ready', async () => {
 // })
 
 client.on('interactionCreate', interaction => {
-  if(interaction.isCommand()){
-
-  }
+  if(interaction.isCommand()) commands.handler(interaction)
 })
 
 client.login(process.env.DISCORD_BOT_TOKEN)
