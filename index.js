@@ -1,17 +1,20 @@
+const { response } = require('express');
 var express = require('express')
 var app = express()
+require('dotenv').config();
+const {API_PORT} = process.env
 
-app.get('/', (req, res) => {
-  res.send([1, 2, 3])
+const db = require('./src/db')
+
+app.get('/ping', (req, res) => {
+  if(req.body === undefined)
+    res.send(JSON.stringify({code: 200, message: "Pong!"}))
 })
 
-
-app.get('/response/', (req, res) => {
-  res.status(404)
-  res.send('Not found')
-})
-app.get('/user/:snowflake', (req, res) => {
-  res.send(req.params.snowflake)
+app.post('/train', async (req, res) => {
+  const {token} = req.headers;
+  if(!await db.checkAPIToken(token)) return res.status(403).json({code: 403, message: "Not Authorized"})
+  res.json({code: 200, message: "Success!"})
 })
 
-app.listen(3000)
+app.listen(API_PORT, console.log(`API listening on port ${API_PORT}`))
