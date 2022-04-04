@@ -7,8 +7,7 @@ const {API_PORT} = process.env
 const db = require('./src/db')
 
 app.get('/ping', (req, res) => {
-  if(req.body === undefined)
-    res.send(JSON.stringify({code: 200, message: "Pong!"}))
+  res.json({code: 200, message: "Pong!"})
 })
 
 app.post('/train', async (req, res) => {
