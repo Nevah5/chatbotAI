@@ -41,11 +41,11 @@ exports.ping = _ => {
 exports.changeStatus = (user) => {
   const production = process.env.PRODUCTION === 'true'
   if(ApiIsOnline){
-    if(production) user.setAvatar('../logo.png')
+    if(production) user.setAvatar('../src/logo.png')
     user.setStatus('online')
     user.setActivity(null)
   }else{
-    if(production) user.setAvatar('../logo-api_noresponse.png')
+    if(production) user.setAvatar('../src/logo-api_noresponse.png')
     user.setStatus('dnd')
     user.setActivity('API DOWN')
   }
