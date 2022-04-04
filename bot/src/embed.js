@@ -6,3 +6,10 @@ exports.error = (msg) => {
   .setTitle("Something went wrong")
   .setDescription(msg)
 }
+
+exports.success = (msg) => {
+  return new MessageEmbed()
+  .setColor("#3FBA54")
+  .setTitle("Success!")
+  .setDescription(msg)
+}

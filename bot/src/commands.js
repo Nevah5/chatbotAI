@@ -8,6 +8,11 @@ exports.build = (commands) => {
     description: 'Edit the bot\'s configuration.',
     options: [
       {
+        name: 'show',
+        description: 'Show the current configuration of the bot.',
+        type: 'SUB_COMMAND'
+      },
+      {
         name: 'set',
         description: '...',
         type: 'SUB_COMMAND_GROUP',
@@ -25,12 +30,41 @@ exports.build = (commands) => {
           {
             name: 'api-noresponse',
             description: 'Set the message for when the API is down.',
-            type: 'SUB_COMMAND'
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'value',
+                description: 'The message content for when the API is down and a user writes with the bot.',
+                type: "STRING",
+                required: true
+              }
+            ]
           },
           {
             name: 'api-noresponse_status',
             description: 'Set the bot\'s status for when the API is down.',
-            type: 'SUB_COMMAND'
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'value',
+                description: 'The bot\'s activity status message.',
+                type: "STRING",
+                required: true
+              }
+            ]
+          },
+          {
+            name: 'bot-permission_role',
+            description: 'Change the role with which you are allowed to use the bot\'s commands.',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'id',
+                description: 'The ID of the role.',
+                type: 'STRING',
+                required: true
+              }
+            ]
           }
         ]
       },
@@ -71,10 +105,10 @@ configSetHandler = interaction => {
   switch(subCmd){
     case "training":
       //check if user has role or owner
-      isAllowed(interaction).then(_ => {
-        //check if already a training channel exists
-        //update training channel in database
-        //return embed
+      isAllowed(interaction).then(async _ => {
+        let channelId = interaction.channel.id;
+        await db.setTrainingChannel(channelId)
+        interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
       }).catch(_ => {
         interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
       })

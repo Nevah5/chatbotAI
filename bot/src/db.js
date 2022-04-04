@@ -19,3 +19,10 @@ exports.getErrorMessage = (id) => {
     })
   })
 }
+
+exports.setTrainingChannel = (id) => {
+  return new Promise((resolve, reject) => {
+    con.query(`UPDATE config SET value='${id}' WHERE ID='bot-training_channel'`)
+    resolve()
+  })
+}
