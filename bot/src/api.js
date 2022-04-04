@@ -13,5 +13,5 @@ exports.checkToken = (token) => {
       process.exit(1);
     }
   })
-  .catch()
+  .catch(e => e) //ignore if api down
 }
