@@ -19,6 +19,8 @@ Chat Channel: _none_
   Show the current API status.
 - /stats user user:<br>
   Show the stats of a user.
+- /help<br>
+  Show a menu with all commands.
 
 # API
 
