@@ -1,17 +1,21 @@
 const fetch = require('node-fetch')
 require('dotenv').config()
 
-var ApiIsOnline = false;
+var ApiIsOnline = true;
 
 exports.checkApi = async (user) => {
   //update bots status curresponding to apis
-  await this.ping()
-  this.changeStatus(user)
+  this.ping().catch(_ => {
+    ApiIsOnline = ApiIsOnline ? false : true;
+    this.changeStatus(user)
+  })
 
   //update every 30 minutes
   setInterval(_ => {
-    await this.ping()
-    this.changeStatus(user);
+    this.ping().catch(_ => {
+      ApiIsOnline = ApiIsOnline ? false : true;
+      this.changeStatus(user)
+    })
   }, 1800000)
 }
 
@@ -21,12 +25,14 @@ exports.ping = _ => {
     fetch(process.env.API + '/ping', {
       method: "GET"
     }).then(res => {
-      ApiIsOnline = res.status === 200;
-      resolve()
+      //reject if state changed
+      if(ApiIsOnline && res.status === 200) resolve()
+      if(!ApiIsOnline && res.status === 200) reject()
     })
     .catch(e => {
-      ApiIsOnline = false;
-      resolve()
+      //reject if state changed
+      if(!ApiIsOnline) resolve()
+      if(ApiIsOnline) reject()
     })
   })
 }
