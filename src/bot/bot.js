@@ -9,22 +9,27 @@ const client = new Client({
   ]
 })
 require("dotenv").config()
+const fetch = require('node-fetch')
 
-const commands = require('./commands');
+const commands = require('./commands')
 
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
-  //client.application.commands
+  client.application.commands
   commands.build(client.guilds.cache.get("960281524685660222").commands)
 })
 
-client.on('messageCreate', msg => {
-  fetch('localhost:3000/train/', {
+client.on('messageCreate', async message => {
+  fetch('http://'+process.env.API + '/train/', {
+    method: "POST",
     headers: {
-      apiToken: 'devToken'
-    },
-    body: "",
+      token: 'devToken',
+      message
+    }
+  }).then(res => {
+    if(res.status === 200) message.react('✅')
+    if(res.status === 403) message.react('❎')
   })
 })
 
