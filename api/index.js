@@ -10,9 +10,15 @@ app.get('/ping', (req, res) => {
   res.json({code: 200, message: "Pong!"})
 })
 
+app.get('/verify', async (req, res) => {
+  const {token} = req.headers;
+  if(!await db.checkAPIToken(token)) return res.status(401).json({code: 401, message: "Invalid Token."})
+  res.json({code: 200, message: "Ok!"})
+})
+
 app.post('/train', async (req, res) => {
   const {token} = req.headers;
-  if(!await db.checkAPIToken(token)) return res.status(403).json({code: 403, message: "Not Authorized"})
+  if(!await db.checkAPIToken(token)) return res.status(403).json({code: 401, message: "Invalid Token."})
   res.json({code: 200, message: "Success!"})
 })
 
