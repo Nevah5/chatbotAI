@@ -1,17 +1,48 @@
 const fetch = require('node-fetch')
 require('dotenv').config()
 
-exports.checkApi = (user) => {
-  fetch(process.env.API + '/ping', {
-    method: "GET"
+var ApiIsOnline = false;
+
+exports.checkApi = async (user) => {
+  //update bots status curresponding to apis
+  this.ping().then(_ => {
+    this.changeStatus(user)
   })
-  .catch(e => {
-    this.apiOffline(user)
-    // user.setAvatar('../logo-api_noresponse.png');
+
+  //update every 30 minutes
+  setInterval(_ => {
+    this.ping().then(_ => {
+      this.changeStatus(user);
+    })
+  }, 1800000)
+}
+
+//api request ping
+exports.ping = _ => {
+  return new Promise((resolve, reject) => {
+    fetch(process.env.API + '/ping', {
+      method: "GET"
+    }).then(res => {
+      ApiIsOnline = res.status === 200;
+      resolve()
+    })
+    .catch(e => {
+      ApiIsOnline = false;
+      resolve()
+    })
   })
 }
 
-exports.apiOffline = (user) =>{
-  user.setStatus('dnd')
-  user.setActivity('API DOWN')
+//update bots profile
+exports.changeStatus = (user) => {
+  const production = process.env.PRODUCTION === 'true'
+  if(ApiIsOnline){
+    if(production) user.setAvatar('../logo.png')
+    user.setStatus('online')
+    user.setActivity(null)
+  }else{
+    if(production) user.setAvatar('../logo-api_noresponse.png')
+    user.setStatus('dnd')
+    user.setActivity('API DOWN')
+  }
 }

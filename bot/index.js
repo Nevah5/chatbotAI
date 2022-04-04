@@ -23,22 +23,21 @@ client.on('ready', async () => {
   commands.build(client.guilds.cache.get("960281524685660222").commands)
 })
 
-client.on('messageCreate', async msg => {
-  if(msg.author.bot) return
-  fetch(process.env.API + '/train/', {
-    method: "POST",
-    headers: {
-      token: 'devToken',
-      message: msg
-    }
-  }).then(res => {
-    if(res.status === 200) msg.react('✅')
-    if(res.status === 403) msg.react('❎')
-  }).catch(async e => {
-    status.apiOffline(client.user);
-    msg.reply({embeds: [embed.error(await db.getErrorMessage('api_noresponse'))]})
-  })
-})
+// client.on('messageCreate', async msg => {
+//   if(msg.author.bot) return
+//   fetch(process.env.API + '/train/', {
+//     method: "POST",
+//     headers: {
+//       token: 'devToken',
+//       message: msg
+//     }
+//   }).then(res => {
+//     if(res.status === 200) msg.react('✅')
+//     if(res.status === 403) msg.react('❎')
+//   }).catch(async e => {
+//     msg.reply({embeds: [embed.error(await db.getErrorMessage('api_noresponse'))]})
+//   })
+// })
 
 client.on('interactionCreate', interaction => {
   if(interaction.isCommand()){
