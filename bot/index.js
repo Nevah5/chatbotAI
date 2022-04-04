@@ -1,5 +1,4 @@
 const { Client, Intents, ClientPresence } = require('discord.js')
-const { use } = require('express/lib/application')
 
 const client = new Client({
   intents: [
@@ -35,7 +34,7 @@ client.on('messageCreate', async msg => {
   }).then(res => {
     if(res.status === 200) msg.react('✅')
     if(res.status === 403) msg.react('❎')
-  }).catch(e => {
+  }).catch(async e => {
     status.apiOffline(client.user);
     msg.reply({embeds: [embed.error(await db.getErrorMessage)]})
   })
