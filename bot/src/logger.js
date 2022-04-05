@@ -27,18 +27,18 @@ const logger = createLogger({
   transports: [
     // - Write all logs with level `debug` and below to `debug.log`
     new transports.File({
-      filename: './logs/debug.log',
+      filename: '../logs/debug.log',
       level: 'debug',
       maxsize: 1000000,
     }),
     // - Write all logs with level `error` and below to `error.log`
-    new transports.File({ filename: './logs/error.log', level: 'error' }),
+    new transports.File({ filename: '../logs/error.log', level: 'error' }),
     // - Write all logs with level `info` and below to `server.log`
-    new transports.File({ filename: './logs/server.log' }),
+    new transports.File({ filename: '../logs/server.log' }),
   ],
   exceptionHandlers: [
     new transports.File({
-      filename: './logs/exceptions.log',
+      filename: '../logs/exceptions.log',
       timestamp: true,
       maxsize: 1000000,
     }),
