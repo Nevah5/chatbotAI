@@ -103,13 +103,18 @@ exports.handler = async interaction => {
 
   switch(commandName){
     case "config":
-      let subCmd = interaction.options.getSubcommand()
-      if(subCmd === 'show') return //fun()
+      isAllowed(interaction).then(async _ => {
+        let subCmd = interaction.options.getSubcommand()
+        if(subCmd === 'show') return //fun()
 
-      let subCmdGroup = interaction.options.getSubcommandGroup()
-      if(subCmdGroup === 'set') return configSetHandler(interaction)
-      if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
-      if(subCmdGroup === 'reset') return //fun()
+        let subCmdGroup = interaction.options.getSubcommandGroup()
+        if(subCmdGroup === 'set') return configSetHandler(interaction)
+        if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
+        if(subCmdGroup === 'reset') return //fun()
+      }).catch(_ => {
+        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
+        logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
+      })
       break
   }
 }
@@ -117,16 +122,11 @@ exports.handler = async interaction => {
 configSetHandler = async interaction => {
   switch(interaction.options.getSubcommand()){
     case "training":
-      await isAllowed(interaction).then(async _ => { //if user is owner or has bot role
-        let channelId = interaction.channel.id
-        await db.updateConfigValue('bot-training_channel', channelId)
+      let channelId = interaction.channel.id
+      await db.updateConfigValue('bot-training_channel', channelId)
 
-        interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
-        logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
-      }).catch(_ => { //if user is not allowed to run command
-        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
-        logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)}`)
-      })
+      interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
+      logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
       break
     case "api-noresponse":
       break
@@ -144,21 +144,16 @@ isAllowed = interaction => {
 }
 
 toggleChat = async interaction => {
-  isAllowed(interaction).then(async _ => {
-    let channelId = interaction.channel.id
+  let channelId = interaction.channel.id
 
-    if(await db.isChat(channelId)) {
-      interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
-      logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - removed ${getChannelMessage(interaction)}`)
-      return await db.removeChat(channelId)
-    }
-    interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
-    db.addChat(channelId)
-    logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - added ${getChannelMessage(interaction)}`)
-  }).catch(_ => {
-    interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
-    logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)}`)
-  })
+  if(await db.isChat(channelId)) {
+    interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
+    logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - removed ${getChannelMessage(interaction)}`)
+    return await db.removeChat(channelId)
+  }
+  interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
+  db.addChat(channelId)
+  logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - added ${getChannelMessage(interaction)}`)
 }
 
 getChannelMessage = interaction => {
