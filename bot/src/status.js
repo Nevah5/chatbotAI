@@ -16,7 +16,7 @@ exports.checkApi = async (user) => {
       ApiIsOnline = ApiIsOnline ? false : true;
       this.changeStatus(user)
     })
-  }, 150000)
+  }, 5000)
 }
 
 //api request ping
