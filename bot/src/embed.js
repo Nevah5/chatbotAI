@@ -29,3 +29,11 @@ exports.apiStatus = (status) => {
   .setDescription(messages[status])
   .setTimestamp()
 }
+
+exports.apiVersionChange = (data) => {
+  return new MessageEmbed()
+  .setTitle("API Version change")
+  .setDescription(`The version of the API\nchanged from ${data.old}\nto ${data.new}.`)
+  .setColor("#3FBA54")
+  .setTimestamp()
+}

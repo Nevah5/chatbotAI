@@ -11,7 +11,7 @@ var con = mysql.createConnection({
 })
 con.connect()
 
-exports.getErrorMessage = (id) => {
+exports.getConfigValue = (id) => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT value FROM config WHERE ID='${id}'`, (err, results) => {
       if(results.length === 1) resolve(results[0].value)
@@ -19,10 +19,9 @@ exports.getErrorMessage = (id) => {
     })
   })
 }
-
-exports.setTrainingChannel = (id) => {
+exports.updateConfigValue = (id, value) => {
   return new Promise((resolve, reject) => {
-    con.query(`UPDATE config SET value='${id}' WHERE ID='bot-training_channel'`)
+    con.query(`UPDATE config SET value='${value}' WHERE ID='${id}'`)
     resolve()
   })
 }

@@ -7,7 +7,7 @@ const {API_PORT} = process.env
 const db = require('./src/db')
 
 app.get('/ping', (req, res) => {
-  res.json({code: 200, message: "Pong!"})
+  res.json({code: 200, message: "Pong!", version: process.env.API_VERSION})
 })
 
 app.get('/verify', async (req, res) => {

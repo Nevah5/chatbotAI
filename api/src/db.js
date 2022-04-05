@@ -18,12 +18,3 @@ exports.checkAPIToken = (token) => {
     })
   })
 }
-
-exports.getErrorMessage = (id) => {
-  return new Promise((resolve, reject) => {
-    con.query(`SELECT value FROM config WHERE ID='${id}'`, (err, result) => {
-      if(result.length === 1) resolve(result.value)
-      if(result.length !== 1) reject(err)
-    })
-  })
-}

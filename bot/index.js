@@ -36,7 +36,7 @@ client.on('ready', async () => {
 //   }).then(res => {
 //     if(res.status === 200) msg.react('✅')
 //   }).catch(async e => {
-//     msg.reply({embeds: [embed.error(await db.getErrorMessage('api_noresponse'))]})
+//     msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse'))]})
 //   })
 // })
 

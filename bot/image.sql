@@ -8,8 +8,9 @@ CREATE TABLE config(
 );
 
 INSERT INTO config VALUES
-('api_noresponse', 'The API is currently not online.\nPlease have patience while the\nissue is getting resolved.'),
-('bot-training_channel', '960281525130235996');
+('api-noresponse', 'The API is currently not online.\nPlease have patience while the\nissue is getting resolved.'),
+('bot-training_channel', '960281525130235996'),
+('api-lastversion', '0.0.1');
 
 
 CREATE TABLE chats(

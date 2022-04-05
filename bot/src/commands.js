@@ -116,7 +116,7 @@ configSetHandler = interaction => {
     case "training":
       isAllowed(interaction).then(async _ => {
         let channelId = interaction.channel.id;
-        await db.setTrainingChannel(channelId)
+        await db.updateConfigValue('bot-training_channel', channelId)
         interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
       }).catch(_ => {
         interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
