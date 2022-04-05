@@ -123,7 +123,7 @@ configSetHandler = async interaction => {
 
         interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
         logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
-      }).catch(_ => {
+      }).catch(_ => { //if user is not allowed to run command
         interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
         logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)}`)
       })
@@ -160,14 +160,23 @@ toggleChat = async interaction => {
   })
 }
 
-getChannelMessage = (interaction) => {
+getChannelMessage = interaction => {
   return `#${interaction.channel.name} (${interaction.channel.id})`
 }
-getUserMessage = (interaction) => {
+getUserMessage = interaction => {
   return `User ${interaction.user.tag} (${interaction.user.id})`
 }
 getCommandMessage = (interaction) => {
-  return "/" + interaction.commandName +
-    (" " + interaction.options.getSubcommandGroup() + " " || " ") +
-    (interaction.options.getSubcommand() || "")
+  try{
+    return "/" + interaction.commandName +
+      (" " + interaction.options.getSubcommandGroup() + " ") +
+      interaction.options.getSubcommand()
+  }catch{
+    try{
+      return "/" + interaction.commandName + " " +
+        interaction.options.getSubcommand()
+    }catch{
+      return "/" + interaction.commandName
+    }
+  }
 }
