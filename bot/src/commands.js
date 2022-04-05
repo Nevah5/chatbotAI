@@ -90,7 +90,7 @@ exports.build = (commands) => {
             type: 'SUB_COMMAND'
           },
           {
-            name: 'api-noresponse_message_status',
+            name: 'api-noresponse_status',
             description: 'Reset the bot\'s status for when the API is down.',
             type: 'SUB_COMMAND'
           }
@@ -111,19 +111,41 @@ exports.handler = async (interaction, client) => {
         if(subCmd === 'show') return showConfig(interaction)
 
         let subCmdGroup = interaction.options.getSubcommandGroup()
+        if(subCmdGroup === 'reset') return configResetHandler(interaction, client)
         if(subCmdGroup === 'set') return configSetHandler(interaction, client)
         if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
-        if(subCmdGroup === 'reset') return //fun()
       }).catch(e => {
         if(!e instanceof ExceptionHandler){
           interaction.reply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
           logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
         }else{
-          interaction.editReply({embeds: [embed.error("Something in the code\nwent wrong...")]})
+          logger.error(e.message)
+          interaction.editReply({embeds: [embed.error("Something in the code\nwent wrong...\n\n")]})
         }
       })
       break
   }
+}
+
+configResetHandler = async (interaction, client) => {
+  await interaction.deferReply({ephemeral: true})
+  let cmd = interaction.options.getSubcommand()
+  let defaultConfigs = {
+    "api-noresponse_message": 'The API is currently not online.\nPlease have patience while the\nissue is getting resolved.',
+    "api-noresponse_status": 'API DOWN'
+  }
+
+  switch(cmd){
+    case "api-noresponse_message":
+      await db.updateConfigValue('api-noresponse_message', defaultConfigs["api-noresponse_message"])
+      break
+      case "api-noresponse_status":
+        await db.updateConfigValue('api-noresponse_status', defaultConfigs["api-noresponse_status"])
+        if(!api.isApiOnline()) client.user.setActivity(defaultConfigs["api-noresponse_status"])
+      break
+  }
+  logger.info(`${getUserMessage(interaction)} reset configuration ${cmd} to ${defaultConfigs[cmd]}`)
+  interaction.editReply({embeds: [embed.success(`Successfully reset\n\`${cmd}\`\nto:\n\n${defaultConfigs[cmd]}`)]})
 }
 
 configSetHandler = async (interaction, client) => {

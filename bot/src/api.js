@@ -39,7 +39,7 @@ pingAndChangeStatus = (user, client) => {
     if(!ApiIsOnline) logger.error("API is now offline!")
 
     try{
-      this.changeStatus(user, client)
+      changeStatus(user, client)
     }catch(e){
       logger.error(e.message)
     }
@@ -80,13 +80,13 @@ onApiVersionChange = async (client, newApiVersion) => {
 }
 
 //update bot's profile
-exports.changeStatus = (user, client) => {
+changeStatus = async (user, client) => {
   const production = process.env.PRODUCTION === 'true'
   let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
   let data = {
     pfp: ApiIsOnline ? '../src/logo.png' : '../src/logo-api_noresponse.png',
     status: ApiIsOnline ? 'online' : 'dnd',
-    activity: ApiIsOnline ? null : 'API DOWN',
+    activity: ApiIsOnline ? null : await db.getConfigValue('api-noresponse_status'),
     apiStatusEmbed: ApiIsOnline ? 'online' : 'offline'
   }
 
