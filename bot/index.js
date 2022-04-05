@@ -11,7 +11,6 @@ const client = new Client({
 require("dotenv").config()
 
 const commands = require('./src/commands')
-const status = require('./src/status')
 const embed = require('./src/embed')
 const db = require('./src/db')
 const api = require('./src/api')
@@ -22,7 +21,7 @@ api.checkToken(process.env.API_TOKEN)
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
-  status.checkApi(client.user)
+  api.checkApi(client.user)
   commands.build(client.guilds.cache.get(process.env.HUB_SERVER).commands)
 })
 
