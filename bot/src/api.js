@@ -40,7 +40,9 @@ pingAndChangeStatus = (user, client) => {
 
     try{
       this.changeStatus(user, client)
-    }catch(e){}
+    }catch(e){
+      logger.error(e.message)
+    }
   })
 }
 
