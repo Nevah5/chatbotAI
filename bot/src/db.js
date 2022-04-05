@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+const logger = require('./logger')
 require('dotenv').config()
 
 var con = mysql.createConnection({
@@ -22,6 +23,7 @@ exports.getConfigValue = (id) => {
 exports.updateConfigValue = (id, value) => {
   return new Promise((resolve, reject) => {
     con.query(`UPDATE config SET value='${value}' WHERE ID='${id}'`)
+    logger.info(`Database - Updated ${id} to ${value}`)
     resolve()
   })
 }

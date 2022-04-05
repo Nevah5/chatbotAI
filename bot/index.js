@@ -14,12 +14,13 @@ const commands = require('./src/commands')
 const embed = require('./src/embed')
 const db = require('./src/db')
 const api = require('./src/api')
+const logger = require('./src/logger')
 
 //check the token
 api.checkToken(process.env.API_TOKEN)
 
 client.on('ready', async () => {
-  console.log(`Logged in as ${client.user.tag}!`)
+  logger.info(`Logged in as ${client.user.tag}!`)
 
   api.checkApi(client.user, client)
   commands.build(client.guilds.cache.get(process.env.HUB_SERVER).commands)

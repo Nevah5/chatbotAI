@@ -3,6 +3,7 @@ require('dotenv').config()
 
 const embed = require('./embed')
 const db = require('./db')
+const logger = require('./logger')
 
 var ApiIsOnline = true
 
@@ -20,18 +21,23 @@ exports.checkToken = (token) => {
       process.exit(1)
     }
   })
-  .catch(e => e) //ignore if api down
+  .catch(e => { //no response from api
+    logger.warn(e.message)
+  })
 }
 
 //checks api every 5 seconds and updated bot profile
 exports.checkApi = async (user, client) => {
   //check api status and update bot status curresponding
   pingAndChangeStatus(user, client)
-  setInterval(_ => {pingAndChangeStatus(user, client)}, 5000)
+  setInterval(_ => {pingAndChangeStatus(user, client)}, process.env.API_CHECK_DELAY)
 }
 pingAndChangeStatus = (user, client) => {
   this.ping(client).catch(_ => {
     ApiIsOnline = ApiIsOnline ? false : true
+    if(ApiIsOnline) logger.info("API is now back online!")
+    if(!ApiIsOnline) logger.warn("API is now offline!")
+
     try{
       this.changeStatus(user, client)
     }catch(e){}
@@ -64,6 +70,7 @@ exports.ping = async client => {
       if(lastApiVersion !== res.version) onApiVersionChange(client, res.version)
     })
     .catch(e => { //when api is not online
+      logger.warn("Ping to " + process.env.API + "/ping failed. Retrying in "+ (process.env.API_CHECK_DELAY / 1000) + " seconds.")
       if(!ApiIsOnline) resolve()
       if(ApiIsOnline) reject() //change api state to offline
     })

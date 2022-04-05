@@ -1,6 +1,7 @@
 const { config } = require("dotenv")
 const db = require('./db')
 const embed = require('./embed')
+var logger = require('./logger')
 
 exports.build = (commands) => {
   commands.create({
@@ -94,11 +95,14 @@ exports.build = (commands) => {
       }
     ]
   })
+  logger.debug(`Successfully built all commands.`)
 }
 
 exports.handler = async interaction => {
   await interaction.deferReply({ephemeral: true})
   const {commandName} = interaction
+  logger.info(`New interaction (/${commandName}) from ${interaction.user.tag}`)
+
   switch(commandName){
     case "config":
       let subCmdGroup = interaction.options.getSubcommandGroup()
@@ -118,8 +122,10 @@ configSetHandler = interaction => {
         let channelId = interaction.channel.id;
         await db.updateConfigValue('bot-training_channel', channelId)
         interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
+        logger.info(`User ${interaction.user.id} ran /config set training - new channel now <#${channelId}>`)
       }).catch(_ => {
         interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
+        logger.info(`User ${interaction.user.id} failed to run /config set training`)
       })
       break
     case "api-noresponse":
@@ -146,11 +152,14 @@ toggleChat = async interaction => {
     let channelId = interaction.channel.id
     if(await db.isChat(channelId)){
       interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
+      logger.info(`User ${interaction.user.id} ran /config toggle chat - removed <#${channelId}>`)
       return await db.removeChat(channelId)
     }
     interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
     db.addChat(channelId)
+    logger.info(`User ${interaction.user.id} ran /config toggle chat - added <#${channelId}>`)
   }).catch(_ => {
     interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
+    logger.info(`User ${interaction.user.id} failed to run /config toggle chat`)
   })
 }
