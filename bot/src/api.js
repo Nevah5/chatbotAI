@@ -46,17 +46,6 @@ pingAndChangeStatus = (user, client) => {
   })
 }
 
-onApiVersionChange = async (client, newApiVersion) => {
-  //get data
-  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
-  let oldApiVersion = await db.getConfigValue('api-lastversion')
-
-  //send message that api version chanted
-  channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion})]})
-  //update last api version in database
-  await db.updateConfigValue('api-lastversion', newApiVersion)
-}
-
 //ping the api
 exports.ping = async client => {
   let lastApiVersion = await db.getConfigValue("api-lastversion")
@@ -79,6 +68,17 @@ exports.ping = async client => {
   })
 }
 
+onApiVersionChange = async (client, newApiVersion) => {
+  //get data
+  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
+  let oldApiVersion = await db.getConfigValue('api-lastversion')
+
+  //send message that api version chanted
+  channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion})]})
+  //update last api version in database
+  await db.updateConfigValue('api-lastversion', newApiVersion)
+}
+
 //update bot's profile
 exports.changeStatus = (user, client) => {
   const production = process.env.PRODUCTION === 'true'
@@ -95,4 +95,8 @@ exports.changeStatus = (user, client) => {
   user.setActivity(data.activity)
   //send information message
   channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus(data.apiStatusEmbed)]})
+}
+
+exports.isApiOnline = _ => {
+  return ApiIsOnline;
 }

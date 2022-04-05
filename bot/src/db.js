@@ -49,3 +49,11 @@ exports.isChat = (id) => {
     })
   })
 }
+
+exports.getChats = (id) => {
+  return new Promise((resolve, reject) => {
+    con.query(`SELECT channelId FROM chats`, (err, results) => {
+      resolve(results)
+    })
+  })
+}

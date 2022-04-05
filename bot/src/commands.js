@@ -1,4 +1,5 @@
 const db = require('./db')
+const api = require('./api')
 const embed = require('./embed')
 var logger = require('./logger')
 
@@ -35,7 +36,7 @@ exports.build = (commands) => {
             type: 'SUB_COMMAND'
           },
           {
-            name: 'api-noresponse',
+            name: 'api-noresponse_message',
             description: 'Set the message for when the API is down.',
             type: 'SUB_COMMAND',
             options: [
@@ -81,12 +82,12 @@ exports.build = (commands) => {
         type: 'SUB_COMMAND_GROUP',
         options: [
           {
-            name: 'api-noresponse',
+            name: 'api-noresponse_message',
             description: 'Reset the message for when the API is down.',
             type: 'SUB_COMMAND'
           },
           {
-            name: 'api-noresponse_status',
+            name: 'api-noresponse_message_status',
             description: 'Reset the bot\'s status for when the API is down.',
             type: 'SUB_COMMAND'
           }
@@ -97,43 +98,62 @@ exports.build = (commands) => {
   logger.debug(`Successfully built all commands.`)
 }
 
-exports.handler = async interaction => {
-  await interaction.deferReply({ephemeral: true})
+exports.handler = async (interaction, client) => {
   const {commandName} = interaction
 
   switch(commandName){
     case "config":
       isAllowed(interaction).then(async _ => {
         let subCmd = interaction.options.getSubcommand()
-        if(subCmd === 'show') return //fun()
+        if(subCmd === 'show') return showConfig(interaction)
 
         let subCmdGroup = interaction.options.getSubcommandGroup()
-        if(subCmdGroup === 'set') return configSetHandler(interaction)
+        if(subCmdGroup === 'set') return configSetHandler(interaction, client)
         if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
         if(subCmdGroup === 'reset') return //fun()
       }).catch(_ => {
-        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
+        interaction.reply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
         logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
       })
       break
   }
 }
 
-configSetHandler = async interaction => {
+configSetHandler = async (interaction, client) => {
   switch(interaction.options.getSubcommand()){
     case "training":
+      await interaction.deferReply({ephemeral: true})
       let channelId = interaction.channel.id
       await db.updateConfigValue('bot-training_channel', channelId)
 
       interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
       logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
       break
-    case "api-noresponse":
+    case "api-noresponse_message":
+      await interaction.deferReply({ephemeral: true})
+      let newMessage = interaction.options.getString("value")
+      await db.updateConfigValue('api-noresponse_message', newMessage)
+      interaction.editReply({embeds: [embed.success("Successfully updated the\nresponse message.")]})
       break
     case "api-noresponse_status":
+      await interaction.deferReply({ephemeral: true})
+      let newStatus = interaction.options.getString("value")
+      await db.updateConfigValue('api-noresponse_status', newStatus)
+      if(!api.isApiOnline()) client.user.setActivity(newStatus)
+      interaction.editReply({embeds: [embed.success("Successfully updated the\nstatus.")]})
       break
   }
 }
+
+showConfig = async (interaction) => {
+  await interaction.deferReply({ephemeral: true})
+
+  let api_version = await db.getConfigValue('api-lastversion')
+  let api_Noresponse = await db.getConfigValue('api-noresponse_message')
+  let bot_TrainingChannel = await db.getConfigValue('bot-training_channel')
+  let chats = await db.getChats()
+}
+
 
 isAllowed = interaction => {
   return new Promise((resolve, reject) => {
@@ -147,11 +167,11 @@ toggleChat = async interaction => {
   let channelId = interaction.channel.id
 
   if(await db.isChat(channelId)) {
-    interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
+    interaction.reply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
     logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - removed ${getChannelMessage(interaction)}`)
     return await db.removeChat(channelId)
   }
-  interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
+  interaction.reply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
   db.addChat(channelId)
   logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - added ${getChannelMessage(interaction)}`)
 }

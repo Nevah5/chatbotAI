@@ -37,13 +37,13 @@ client.on('ready', async () => {
 //   }).then(res => {
 //     if(res.status === 200) msg.react('✅')
 //   }).catch(async e => {
-//     msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse'))]})
+//     msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse_message'))]})
 //   })
 // })
 
 client.on('interactionCreate', interaction => {
   try{
-    if(interaction.isCommand()) commands.handler(interaction)
+    if(interaction.isCommand()) commands.handler(interaction, client)
   }catch(e){
     logger.error(e)
   }
