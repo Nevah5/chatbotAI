@@ -146,6 +146,7 @@ isAllowed = interaction => {
 toggleChat = async interaction => {
   isAllowed(interaction).then(async _ => {
     let channelId = interaction.channel.id
+
     if(await db.isChat(channelId)) {
       interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
       logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - removed ${getChannelMessage(interaction)}`)
