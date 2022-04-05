@@ -42,7 +42,11 @@ client.on('ready', async () => {
 // })
 
 client.on('interactionCreate', interaction => {
-  if(interaction.isCommand()) commands.handler(interaction)
+  try{
+    if(interaction.isCommand()) commands.handler(interaction)
+  }catch(e){
+    logger.error(e)
+  }
 })
 
 client.login(process.env.DISCORD_BOT_TOKEN)

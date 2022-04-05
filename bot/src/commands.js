@@ -1,4 +1,3 @@
-const { config } = require("dotenv")
 const db = require('./db')
 const embed = require('./embed')
 var logger = require('./logger')
@@ -101,31 +100,32 @@ exports.build = (commands) => {
 exports.handler = async interaction => {
   await interaction.deferReply({ephemeral: true})
   const {commandName} = interaction
-  logger.info(`New interaction (/${commandName}) from ${interaction.user.tag}`)
 
   switch(commandName){
     case "config":
-      let subCmdGroup = interaction.options.getSubcommandGroup()
       let subCmd = interaction.options.getSubcommand()
+      if(subCmd === 'show') return //fun()
 
+      let subCmdGroup = interaction.options.getSubcommandGroup()
       if(subCmdGroup === 'set') return configSetHandler(interaction)
       if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
-      return configResetHandler(interaction)
+      if(subCmdGroup === 'reset') return //fun()
+      break
   }
 }
 
-configSetHandler = interaction => {
-  let subCmd = interaction.options.getSubcommand()
-  switch(subCmd){
+configSetHandler = async interaction => {
+  switch(interaction.options.getSubcommand()){
     case "training":
-      isAllowed(interaction).then(async _ => {
-        let channelId = interaction.channel.id;
+      await isAllowed(interaction).then(async _ => { //if user is owner or has bot role
+        let channelId = interaction.channel.id
         await db.updateConfigValue('bot-training_channel', channelId)
+
         interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
-        logger.info(`User ${interaction.user.id} ran /config set training - new channel now <#${channelId}>`)
+        logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
       }).catch(_ => {
         interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
-        logger.info(`User ${interaction.user.id} failed to run /config set training`)
+        logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)}`)
       })
       break
     case "api-noresponse":
@@ -133,10 +133,6 @@ configSetHandler = interaction => {
     case "api-noresponse_status":
       break
   }
-}
-
-configResetHandler = interaction => {
-
 }
 
 isAllowed = interaction => {
@@ -150,16 +146,28 @@ isAllowed = interaction => {
 toggleChat = async interaction => {
   isAllowed(interaction).then(async _ => {
     let channelId = interaction.channel.id
-    if(await db.isChat(channelId)){
+    if(await db.isChat(channelId)) {
       interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
-      logger.info(`User ${interaction.user.id} ran /config toggle chat - removed <#${channelId}>`)
+      logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - removed ${getChannelMessage(interaction)}`)
       return await db.removeChat(channelId)
     }
     interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
     db.addChat(channelId)
-    logger.info(`User ${interaction.user.id} ran /config toggle chat - added <#${channelId}>`)
+    logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - added ${getChannelMessage(interaction)}`)
   }).catch(_ => {
     interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
-    logger.info(`User ${interaction.user.id} failed to run /config toggle chat`)
+    logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)}`)
   })
+}
+
+getChannelMessage = (interaction) => {
+  return `#${interaction.channel.name} (${interaction.channel.id})`
+}
+getUserMessage = (interaction) => {
+  return `User ${interaction.user.tag} (${interaction.user.id})`
+}
+getCommandMessage = (interaction) => {
+  return "/" + interaction.commandName +
+    (" " + interaction.options.getSubcommandGroup() + " " || " ") +
+    (interaction.options.getSubcommand() || "")
 }

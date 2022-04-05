@@ -36,7 +36,7 @@ pingAndChangeStatus = (user, client) => {
   this.ping(client).catch(_ => {
     ApiIsOnline = ApiIsOnline ? false : true
     if(ApiIsOnline) logger.info("API is now back online!")
-    if(!ApiIsOnline) logger.warn("API is now offline!")
+    if(!ApiIsOnline) logger.error("API is now offline!")
 
     try{
       this.changeStatus(user, client)
@@ -64,16 +64,16 @@ exports.ping = async client => {
     fetch(process.env.API + '/ping', {
       method: "GET"
     }).then(async res => {
-      if(ApiIsOnline && res.status === 200) resolve()
-      if(!ApiIsOnline && res.status === 200) reject() //change api state to online
+      if(!ApiIsOnline && res.status === 200) return reject() //change api state to online
 
+      if(ApiIsOnline && res.status === 200) resolve()
       //check api version
       res = await res.json()
       if(lastApiVersion !== res.version) onApiVersionChange(client, res.version)
     })
     .catch(e => { //when api is not online
-      logger.warn("Ping to " + process.env.API + "/ping failed. Retrying in "+ (process.env.API_CHECK_DELAY / 1000) + " seconds.")
-      if(!ApiIsOnline) resolve()
+      logger.debug("Ping to " + process.env.API + "/ping failed. Retrying in "+ (process.env.API_CHECK_DELAY / 1000) + " seconds.")
+      if(!ApiIsOnline) return resolve()
       if(ApiIsOnline) reject() //change api state to offline
     })
   })
