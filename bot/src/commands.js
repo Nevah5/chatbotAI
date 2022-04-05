@@ -106,6 +106,7 @@ exports.handler = async (interaction, client) => {
 
   switch(commandName){
     case "config":
+      await interaction.deferReply({ephemeral: true})
       isAllowed(interaction).then(async _ => {
         let subCmd = interaction.options.getSubcommand()
         if(subCmd === 'show') return showConfig(interaction)
@@ -114,20 +115,15 @@ exports.handler = async (interaction, client) => {
         if(subCmdGroup === 'reset') return configResetHandler(interaction, client)
         if(subCmdGroup === 'set') return configSetHandler(interaction, client)
         if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
-      }).catch(e => {
-        if(!e instanceof ExceptionHandler){
-          interaction.reply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
-          logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
-        }else{
-          interaction.editReply({embeds: [embed.error("Something in the code\nwent wrong...\n\n")]})
-        }
+      }).catch(async e => {
+        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
+        logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
       })
       break
   }
 }
 
 configResetHandler = async (interaction, client) => {
-  await interaction.deferReply({ephemeral: true})
   let cmd = interaction.options.getSubcommand()
   let defaultConfigs = {
     "api-noresponse_message": 'The API is currently not online.\nPlease have patience while the\nissue is getting resolved.',
@@ -150,7 +146,6 @@ configResetHandler = async (interaction, client) => {
 configSetHandler = async (interaction, client) => {
   switch(interaction.options.getSubcommand()){
     case "training":
-      await interaction.deferReply({ephemeral: true})
       let channelId = interaction.channel.id
       await db.updateConfigValue('bot-training_channel', channelId)
 
@@ -158,20 +153,17 @@ configSetHandler = async (interaction, client) => {
       logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
       break
     case "api-noresponse_message":
-      await interaction.deferReply({ephemeral: true})
       let newMessage = interaction.options.getString("value")
       await db.updateConfigValue('api-noresponse_message', newMessage)
       interaction.editReply({embeds: [embed.success("Successfully updated the\nresponse message.")]})
       break
     case "api-noresponse_status":
-      await interaction.deferReply({ephemeral: true})
       let newStatus = interaction.options.getString("value")
       await db.updateConfigValue('api-noresponse_status', newStatus)
       if(!api.isApiOnline()) client.user.setActivity(newStatus)
       interaction.editReply({embeds: [embed.success("Successfully updated the\nstatus.")]})
       break
     case "bot-permission_role":
-      await interaction.deferReply({ephemeral: true})
       let newRole = interaction.options.getRole('role')
       await db.updateConfigValue('bot-permission_role', newRole.id)
       interaction.editReply({embeds: [embed.success(`Successfully changed the\nrole to <@&${newRole.id}>!`)]})
@@ -180,8 +172,6 @@ configSetHandler = async (interaction, client) => {
 }
 
 showConfig = async (interaction) => {
-  await interaction.deferReply({ephemeral: true})
-
   let api_version = await db.getConfigValue('api-lastversion')
   let api_Noresponse = await db.getConfigValue('api-noresponse_message')
   let bot_TrainingChannel = await db.getConfigValue('bot-training_channel')
