@@ -6,6 +6,7 @@ const db = require('./db')
 
 var ApiIsOnline = true;
 
+//checks the token on start and exists if token is not valid
 exports.checkToken = (token) => {
   fetch(process.env.API + '/verify', {
     method: "GET",
@@ -22,69 +23,67 @@ exports.checkToken = (token) => {
   .catch(e => e) //ignore if api down
 }
 
+//checks api every 5 seconds and updated bot profile
 exports.checkApi = async (user, client) => {
-  //update bots status curresponding to apis
+  //check api status and update bot status curresponding
+  pingAndChangeStatus(user, client)
+  setInterval(_ => {pingAndChangeStatus(user, client)}, 5000)
+}
+pingAndChangeStatus = (user, client) => {
   this.ping(client).catch(_ => {
     ApiIsOnline = ApiIsOnline ? false : true;
     try{
       this.changeStatus(user, client)
     }catch(e){}
   })
-
-  //update every 30 minutes
-  setInterval(_ => {
-    this.ping(client).catch(_ => {
-      ApiIsOnline = ApiIsOnline ? false : true;
-      try{
-        this.changeStatus(user, client)
-      }catch(e){}
-    })
-  }, 5000)
 }
 
 onApiVersionChange = async (client, newApiVersion) => {
+  //get data
   let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
   let oldApiVersion = await db.getConfigValue('api-lastversion')
 
+  //send message that api version chanted
   channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion})]})
+  //update last api version in database
   await db.updateConfigValue('api-lastversion', newApiVersion)
 }
 
-//api request ping
+//ping the api
 exports.ping = async client => {
   let lastApiVersion = await db.getConfigValue("api-lastversion")
-  // console.log("Last version: "+lastApiVersion);
   return new Promise((resolve, reject) => {
     fetch(process.env.API + '/ping', {
       method: "GET"
     }).then(async res => {
-      res = await res.json()
-      //reject if state changed
-      if(lastApiVersion !== res.version) onApiVersionChange(client, res.version)
       if(ApiIsOnline && res.status === 200) resolve()
-      if(!ApiIsOnline && res.status === 200) reject()
+      if(!ApiIsOnline && res.status === 200) reject() //change api state to online
+
+      //check api version
+      res = await res.json()
+      if(lastApiVersion !== res.version) onApiVersionChange(client, res.version)
     })
     .catch(e => { //when api is not online
-      //reject if state changed
       if(!ApiIsOnline) resolve()
-      if(ApiIsOnline) reject()
+      if(ApiIsOnline) reject() //change api state to offline
     })
   })
 }
 
-//update bots profile
+//update bot's profile
 exports.changeStatus = (user, client) => {
-  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
   const production = process.env.PRODUCTION === 'true'
-  if(ApiIsOnline){
-    if(production) user.setAvatar('../src/logo.png')
-    user.setStatus('online')
-    user.setActivity(null)
-    channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus("online")]})
-  }else{
-    if(production) user.setAvatar('../src/logo-api_noresponse.png')
-    user.setStatus('dnd')
-    user.setActivity('API DOWN')
-    channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus("offline")]})
+  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
+  let data = {
+    pfp: ApiIsOnline ? '../src/logo.png' : '../src/logo-api_noresponse.png',
+    status: ApiIsOnline ? 'online' : 'dnd',
+    activity: ApiIsOnline ? null : 'API DOWN',
+    apiStatusEmbed: ApiIsOnline ? 'online' : 'offline'
   }
+
+  if(production) user.setAvatar(data.pfp) //update pfp when on production
+  user.setStatus(data.status)
+  user.setActivity(data.activity)
+  //send information message
+  channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus(data.apiStatusEmbed)]})
 }
