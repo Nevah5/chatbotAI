@@ -21,7 +21,7 @@ api.checkToken(process.env.API_TOKEN)
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
-  api.checkApi(client.user)
+  api.checkApi(client.user, client)
   commands.build(client.guilds.cache.get(process.env.HUB_SERVER).commands)
 })
 

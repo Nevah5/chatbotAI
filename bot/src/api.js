@@ -1,6 +1,8 @@
 const fetch = require('node-fetch')
 require('dotenv').config()
 
+const embed = require('./embed')
+
 var ApiIsOnline = true;
 
 exports.checkToken = (token) => {
@@ -19,18 +21,22 @@ exports.checkToken = (token) => {
   .catch(e => e) //ignore if api down
 }
 
-exports.checkApi = async (user) => {
+exports.checkApi = async (user, client) => {
   //update bots status curresponding to apis
   this.ping().catch(_ => {
     ApiIsOnline = ApiIsOnline ? false : true;
-    this.changeStatus(user).catch(e => e)
+    try{
+      this.changeStatus(user, client)
+    }catch(e){}
   })
 
   //update every 30 minutes
   setInterval(_ => {
     this.ping().catch(_ => {
       ApiIsOnline = ApiIsOnline ? false : true;
-      this.changeStatus(user).catch(e => e)
+      try{
+        this.changeStatus(user, client)
+      }catch(e){}
     })
   }, 5000)
 }
@@ -54,15 +60,18 @@ exports.ping = _ => {
 }
 
 //update bots profile
-exports.changeStatus = (user) => {
+exports.changeStatus = (user, client) => {
+  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
   const production = process.env.PRODUCTION === 'true'
   if(ApiIsOnline){
     if(production) user.setAvatar('../src/logo.png')
     user.setStatus('online')
     user.setActivity(null)
+    channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus("online")]})
   }else{
     if(production) user.setAvatar('../src/logo-api_noresponse.png')
     user.setStatus('dnd')
     user.setActivity('API DOWN')
+    channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus("offline")]})
   }
 }
