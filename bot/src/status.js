@@ -7,14 +7,14 @@ exports.checkApi = async (user) => {
   //update bots status curresponding to apis
   this.ping().catch(_ => {
     ApiIsOnline = ApiIsOnline ? false : true;
-    this.changeStatus(user)
+    this.changeStatus(user).catch(e => e)
   })
 
   //update every 30 minutes
   setInterval(_ => {
     this.ping().catch(_ => {
       ApiIsOnline = ApiIsOnline ? false : true;
-      this.changeStatus(user)
+      this.changeStatus(user).catch(e => e)
     })
   }, 5000)
 }
