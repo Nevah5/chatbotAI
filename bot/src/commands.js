@@ -1,7 +1,10 @@
+const { MessageEmbed } = require('discord.js')
+var logger = require('./logger')
 const db = require('./db')
 const api = require('./api')
 const embed = require('./embed')
-var logger = require('./logger')
+const { ExceptionHandler } = require('winston')
+require('dotenv').config()
 
 exports.build = (commands) => {
   commands.create({
@@ -111,9 +114,13 @@ exports.handler = async (interaction, client) => {
         if(subCmdGroup === 'set') return configSetHandler(interaction, client)
         if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
         if(subCmdGroup === 'reset') return //fun()
-      }).catch(_ => {
-        interaction.reply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
-        logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
+      }).catch(e => {
+        if(!e instanceof ExceptionHandler){
+          interaction.reply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
+          logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
+        }else{
+          interaction.editReply({embeds: [embed.error("Something in the code\nwent wrong...")]})
+        }
       })
       break
   }
@@ -151,7 +158,31 @@ showConfig = async (interaction) => {
   let api_version = await db.getConfigValue('api-lastversion')
   let api_Noresponse = await db.getConfigValue('api-noresponse_message')
   let bot_TrainingChannel = await db.getConfigValue('bot-training_channel')
+  let api_NoresponseStatus = await db.getConfigValue('api-noresponse_status')
   let chats = await db.getChats()
+
+  let overviewEmbed = new MessageEmbed()
+  .setTitle("Config Overview")
+  .addFields(
+    {
+      name: 'API Version',
+      value: api_version
+    },
+    {
+      name: 'API Outage bot status',
+      value: api_NoresponseStatus
+    },
+    {
+      name: 'API Outage user info message',
+      value: api_Noresponse
+    },
+    {
+      name: 'Bot training channel',
+      value: `<#${bot_TrainingChannel}>`
+    }
+  )
+  if(chats.length >= 1) overviewEmbed.addField("Chats", chats.map(chat => ` <#${chat.channelId}>`).toString())
+  interaction.editReply({embeds: [overviewEmbed]})
 }
 
 
