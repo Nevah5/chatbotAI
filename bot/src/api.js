@@ -4,7 +4,7 @@ require('dotenv').config()
 const embed = require('./embed')
 const db = require('./db')
 
-var ApiIsOnline = true;
+var ApiIsOnline = true
 
 //checks the token on start and exists if token is not valid
 exports.checkToken = (token) => {
@@ -17,7 +17,7 @@ exports.checkToken = (token) => {
   .then(res => {
     if(res.status === 401){
       console.log("The specified API token in .env is not valid.")
-      process.exit(1);
+      process.exit(1)
     }
   })
   .catch(e => e) //ignore if api down
@@ -31,7 +31,7 @@ exports.checkApi = async (user, client) => {
 }
 pingAndChangeStatus = (user, client) => {
   this.ping(client).catch(_ => {
-    ApiIsOnline = ApiIsOnline ? false : true;
+    ApiIsOnline = ApiIsOnline ? false : true
     try{
       this.changeStatus(user, client)
     }catch(e){}

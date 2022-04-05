@@ -21,7 +21,7 @@ exports.saveTraining = () => {
 }
 
 const train = (data) => {
-  console.log("Training");
+  console.log("Training")
 
   const d = new Date()
 
@@ -34,7 +34,7 @@ const train = (data) => {
     learningRate: 0.001
   })
 
-  this.saveTraining();
+  this.saveTraining()
 
-  console.log(`Finished in ${(new Date() - d) / 1000}sec`);
+  console.log(`Finished in ${(new Date() - d) / 1000}sec`)
 }
