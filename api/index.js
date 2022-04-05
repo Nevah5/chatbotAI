@@ -4,10 +4,12 @@ require('dotenv').config()
 const {API_PORT} = process.env
 
 const db = require('./src/db')
+const logger = require('./src/logger')
 
 //Endpoints
 app.get('/ping', (req, res) => {
   res.json({code: 200, message: "Pong!", version: process.env.API_VERSION})
+  logEndpointRequest('get', 'ping', req)
 })
 app.get('/verify', async (req, res) => {
   const {token} = req.headers
@@ -16,6 +18,7 @@ app.get('/verify', async (req, res) => {
   }).catch(response => {
     res.status(response.code).json({code: response.code, message: response.message})
   })
+  logEndpointRequest('get', 'verify', req)
 })
 app.post('/train', async (req, res) => {
   const {token} = req.headers
@@ -24,7 +27,13 @@ app.post('/train', async (req, res) => {
   }).catch(response =>{
     res.status(response.code).json({code: response.code, message: response.message})
   })
+  logEndpointRequest('post', 'train', req)
 })
+
+//Log templates
+logEndpointRequest = (method, endpoint, req) => {
+  logger.info(`${method.toUpperCase()} /${endpoint} from ${req.headers['x-forwarded-for'] || "localhost"}`)
+}
 
 //Promises
 checkTokenPromise = async (token) => {
@@ -34,4 +43,4 @@ checkTokenPromise = async (token) => {
   })
 }
 
-app.listen(API_PORT, console.log(`API listening on port ${API_PORT}`))
+app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
