@@ -70,9 +70,9 @@ exports.build = (commands) => {
             type: 'SUB_COMMAND',
             options: [
               {
-                name: 'id',
-                description: 'The ID of the role.',
-                type: 'STRING',
+                name: 'role',
+                description: 'The role which should have permission to all commands.',
+                type: 'ROLE',
                 required: true
               }
             ]
@@ -119,7 +119,6 @@ exports.handler = async (interaction, client) => {
           interaction.reply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
           logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
         }else{
-          logger.error(e.message)
           interaction.editReply({embeds: [embed.error("Something in the code\nwent wrong...\n\n")]})
         }
       })
@@ -171,6 +170,12 @@ configSetHandler = async (interaction, client) => {
       if(!api.isApiOnline()) client.user.setActivity(newStatus)
       interaction.editReply({embeds: [embed.success("Successfully updated the\nstatus.")]})
       break
+    case "bot-permission_role":
+      await interaction.deferReply({ephemeral: true})
+      let newRole = interaction.options.getRole('role')
+      await db.updateConfigValue('bot-permission_role', newRole.id)
+      interaction.editReply({embeds: [embed.success(`Successfully changed the\nrole to <@&${newRole.id}>!`)]})
+      break
   }
 }
 
@@ -181,6 +186,7 @@ showConfig = async (interaction) => {
   let api_Noresponse = await db.getConfigValue('api-noresponse_message')
   let bot_TrainingChannel = await db.getConfigValue('bot-training_channel')
   let api_NoresponseStatus = await db.getConfigValue('api-noresponse_status')
+  let botRoleId = await db.getConfigValue('bot-permission_role')
   let chats = await db.getChats()
 
   let overviewEmbed = new MessageEmbed()
@@ -201,6 +207,10 @@ showConfig = async (interaction) => {
     {
       name: 'Bot training channel',
       value: `<#${bot_TrainingChannel}>`
+    },
+    {
+      name: 'Permission Role',
+      value: `<@&${botRoleId}>`
     }
   )
   if(chats.length >= 1) overviewEmbed.addField("Chats", chats.map(chat => ` <#${chat.channelId}>`).toString())
@@ -208,10 +218,11 @@ showConfig = async (interaction) => {
 }
 
 
-isAllowed = interaction => {
-  return new Promise((resolve, reject) => {
+isAllowed = async interaction => {
+  return new Promise(async (resolve, reject) => {
+    let roleId = await db.getConfigValue('bot-permission_role');
     if(interaction.user.id === process.env.OWNER_ID) return resolve()
-    if(interaction.member.roles.cache.filter(role => role.id === process.env.BOT_ROLE_ID).size === 1) return resolve()
+    if(interaction.member.roles.cache.filter(role => role.id === roleId).size === 1) return resolve()
     reject()
   })
 }
