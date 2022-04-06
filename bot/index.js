@@ -29,7 +29,7 @@ client.on('ready', async () => {
 
 client.on('messageCreate', async msg => {
   if(msg.author.bot) return
-  if(db.isChat(msg.channel.id)) message.sendResponse(msg)
+  if(await db.isChat(msg.channel.id)) message.sendResponse(msg)
 })
 
 client.on('interactionCreate', interaction => {
