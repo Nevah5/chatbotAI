@@ -37,10 +37,3 @@ exports.apiVersionChange = (data) => {
   .setColor("#3FBA54")
   .setTimestamp()
 }
-
-exports.messageResponse = msg => {
-  return new MessageEmbed()
-  .setTitle('\u200b')
-  .setDescription(msg)
-  .setColor('#FFFFFF')
-}
