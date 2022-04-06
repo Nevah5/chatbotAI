@@ -7,20 +7,26 @@ This project was originally made for PepperLand, a discord server from a YouTube
 ### **_Default Settings_**
 
 Training Channel: _none_<br>
-Chat Channel: _none_
+Chat Channels: _none_
 
 ## **_Commands_**
 
-- /config set training<br>
-  Sets the channel, where the bot gets it's training data from.
-- /config set chat<br>
-  Sets the channel where the bot writes with the user.
-- /status api<br>
-  Show the current API status.
-- /stats user user:<br>
-  Show the stats of a user.
-- /help<br>
-  Show a menu with all commands.
+### /config
+
+- toggle chat<br>
+  Toggle a channel for the bot to listen to all messages. I would recommend doing that in a seperate channel.
+- set training<br>
+  A channel that should be the most active with meaningful message contents for the AI to learn from.
+- set api-noresponse_message<br>
+  The message that the bots sends in a toggled chat channel when the API is not responding.
+- set api-noresponse_status<br>
+  The activity status of the bot when the API is not responding.
+- reset api-noresponse_message<br>
+  Resets the configuration to default.
+- reset api-noresponse_status<br>
+  Resets the configuration to default.
+- show<br>
+  Show all configured configurations.
 
 # API
 
@@ -36,7 +42,11 @@ The API is hosted on chatbotapi.nevah5.com (**currently offline**).
 
 There are multiple endpoints from where you can gather data. Those are listed below:
 
-- /ping
-- /train
+- GET /ping<be>
+  An endpoint to verify the version and that the API is online.
+- GET /verify<br>
+  To verify the API token. Should send 200 Ok!
+- GET /signup<br>
+  Request to get a new API token.
 
 An example would be: https://chatbotapi.nevah5.com/ping.
