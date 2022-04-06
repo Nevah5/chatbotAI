@@ -7,8 +7,9 @@ const embed = require('./embed')
 
 exports.sendResponse = async msg => {
   if(!api.isApiOnline()) return msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse_message'))]})
+  msg.channel.sendTyping()
   //move this fetch into api.js
-  fetch(process.env.API + '/response', {
+  await fetch(process.env.API + '/response', {
     method: 'GET',
     headers: {
       message: msg
