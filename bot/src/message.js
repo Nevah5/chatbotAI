@@ -1,5 +1,4 @@
 const fetch = require('node-fetch')
-require('dotenv').config()
 
 const api = require('./api')
 const db = require('./db')
@@ -12,7 +11,7 @@ exports.sendResponse = async msg => {
   await fetch(process.env.API + '/response', {
     method: 'POST',
     headers: {
-      // token: process.env.API_TOKEN,
+      token: process.env.API_TOKEN,
       message: msg
     }
   }).then(async res => {

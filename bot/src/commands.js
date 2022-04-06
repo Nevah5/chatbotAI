@@ -4,7 +4,6 @@ const db = require('./db')
 const api = require('./api')
 const embed = require('./embed')
 const { ExceptionHandler } = require('winston')
-require('dotenv').config()
 
 exports.build = (commands) => {
   commands.create({
