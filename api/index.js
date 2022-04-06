@@ -12,14 +12,14 @@ app.get('/ping', (req, res) => {
   res.json({code: 200, message: "Pong!", version: process.env.API_VERSION})
   logEndpointRequest('get', 'ping', req)
 })
-app.get('/verify', async (req, res) => {
+app.post('/verify', async (req, res) => {
   const {token} = req.headers
   await checkTokenPromise(token).then(response => {
     res.status(response.code).json({code: response.code, message: response.message})
   }).catch(response => {
     res.status(response.code).json({code: response.code, message: response.message})
   })
-  logEndpointRequest('get', 'verify', req)
+  logEndpointRequest('post', 'verify', req)
 })
 app.get('/signup', async (req, res) => {
   let token = generateApiKey()
@@ -29,13 +29,13 @@ app.get('/signup', async (req, res) => {
   })
   logEndpointRequest('post', 'signup', req)
 })
-app.get('/response', async (req, res) => {
+app.post('/response', async (req, res) => {
   let token = req.headers.token
-  await checkTokenPromise(token).then(response => {
+  await checkTokenPromise(token).then(_ => {
     res.status(200).json({code: 200, message: 'Hello!'})
-    logger.info(`GET /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
+    logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
   }).catch(response => {
-    logger.info(`GET /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
+    logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
     res.status(response.code).json({code: response.code, message: response.message})
   })
 })

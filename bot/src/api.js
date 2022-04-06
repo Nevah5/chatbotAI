@@ -10,7 +10,7 @@ var ApiIsOnline = true
 //checks the token on start and exists if token is not valid
 exports.checkToken = (token) => {
   fetch(process.env.API + '/verify', {
-    method: "GET",
+    method: "POST",
     headers: {
       token
     }
