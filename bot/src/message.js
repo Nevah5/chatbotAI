@@ -5,7 +5,10 @@ const db = require('./db')
 const embed = require('./embed')
 
 exports.sendResponse = async msg => {
-  if(!api.isApiOnline()) return msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse_message'))]})
+  if(!api.isApiOnline() && msg.author.id === process.env.OWNER_ID) return
+  if(!api.isApiOnline()) msg.delete()
+  if(!api.isApiOnline()) return msg.author.send({embeds: [embed.error(await db.getConfigValue('api-noresponse_message'))]})
+  // if(!api.isApiOnline()) return msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse_message'))]})
   msg.channel.sendTyping()
   //move this fetch into api.js
   await fetch(process.env.API + '/response', {
