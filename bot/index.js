@@ -12,6 +12,7 @@ require("dotenv").config()
 
 const commands = require('./src/commands')
 const embed = require('./src/embed')
+const message = require('./src/message')
 const db = require('./src/db')
 const api = require('./src/api')
 const logger = require('./src/logger')
@@ -26,20 +27,10 @@ client.on('ready', async () => {
   commands.build(client.guilds.cache.get(process.env.HUB_SERVER).commands)
 })
 
-// client.on('messageCreate', async msg => {
-//   if(msg.author.bot) return
-//   fetch(process.env.API + '/train/', {
-//     method: "POST",
-//     headers: {
-//       token: 'devToken',
-//       message: msg
-//     }
-//   }).then(res => {
-//     if(res.status === 200) msg.react('✅')
-//   }).catch(async e => {
-//     msg.reply({embeds: [embed.error(await db.getConfigValue('api-noresponse_message'))]})
-//   })
-// })
+client.on('messageCreate', async msg => {
+  if(msg.author.bot) return
+  if(db.isChat(msg.channel.id)) message.sendResponse(msg)
+})
 
 client.on('interactionCreate', interaction => {
   try{
