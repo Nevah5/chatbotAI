@@ -139,7 +139,8 @@ configResetHandler = async (interaction, client) => {
         if(!api.isApiOnline()) client.user.setActivity(defaultConfigs["api-noresponse_status"])
       break
   }
-  logger.info(`${getUserMessage(interaction)} reset configuration ${cmd} to ${defaultConfigs[cmd]}`)
+  let defaultConfigEscaped = (defaultConfigs[cmd]).replace(/(\r\n|\n|\r)/gm, '\\n')
+  logger.info(`${getUserMessage(interaction)} reset configuration ${cmd} to ${defaultConfigEscaped}`)
   interaction.editReply({embeds: [embed.success(`Successfully reset\n\`${cmd}\`\nto:\n\n${defaultConfigs[cmd]}`)]})
 }
 
@@ -221,11 +222,11 @@ toggleChat = async interaction => {
   let channelId = interaction.channel.id
 
   if(await db.isChat(channelId)) {
-    interaction.reply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
+    interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnot a chat anymore.`)]})
     logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - removed ${getChannelMessage(interaction)}`)
     return await db.removeChat(channelId)
   }
-  interaction.reply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
+  interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
   db.addChat(channelId)
   logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - added ${getChannelMessage(interaction)}`)
 }

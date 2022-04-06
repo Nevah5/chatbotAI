@@ -23,7 +23,7 @@ exports.getConfigValue = (id) => {
 exports.updateConfigValue = (id, value) => {
   return new Promise((resolve, reject) => {
     con.query(`UPDATE config SET value='${value}' WHERE ID='${id}'`)
-    logger.info(`Database - Updated ${id} to ${value}`)
+    logger.info(`Database - Updated ${id} to ${value}`.replace(/(\r\n|\n|\r)/gm, '\\n'))
     resolve()
   })
 }
