@@ -54,7 +54,7 @@ exports.ping = async client => {
     fetch(process.env.API + '/ping', {
       method: "GET"
     }).then(async res => {
-      logger.info(`Successfully pinges API in ${(new Date - startPing)}ms`)
+      logger.info(`Successfully pinged API in ${(new Date - startPing)}ms`)
       if(!ApiIsOnline && res.status === 200) return reject() //change api state to online
 
       if(ApiIsOnline && res.status === 200) resolve()
