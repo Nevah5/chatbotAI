@@ -11,10 +11,17 @@ var con = mysql.createConnection({
 })
 con.connect()
 
-exports.checkAPIToken = (token) => {
+exports.checkAPIToken = token => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT token FROM apiTokens WHERE token='${token}'`, (err, result) =>{
       resolve(result.length == 1)
     })
+  })
+}
+
+exports.addAPIToken = token => {
+  return new Promise((resolve, reject) => {
+    con.query(`INSERT INTO apiTokens (token) VALUES ('${token}')`)
+    resolve()
   })
 }

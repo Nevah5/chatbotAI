@@ -1,5 +1,6 @@
 var express = require('express')
 var app = express()
+const generateApiKey = require('generate-api-key')
 require('dotenv').config()
 const {API_PORT} = process.env
 
@@ -19,6 +20,14 @@ app.get('/verify', async (req, res) => {
     res.status(response.code).json({code: response.code, message: response.message})
   })
   logEndpointRequest('get', 'verify', req)
+})
+app.post('/signup', async (req, res) => {
+  let token = generateApiKey()
+  await db.addAPIToken(token).then(_ => {
+    logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
+    res.status(201).json({code: 201, message: "Created!", token: token})
+  })
+  logEndpointRequest('post', 'signup', req)
 })
 app.post('/train', async (req, res) => {
   const {token} = req.headers
