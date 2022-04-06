@@ -21,7 +21,7 @@ app.get('/verify', async (req, res) => {
   })
   logEndpointRequest('get', 'verify', req)
 })
-app.post('/signup', async (req, res) => {
+app.get('/signup', async (req, res) => {
   let token = generateApiKey()
   await db.addAPIToken(token).then(_ => {
     logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
