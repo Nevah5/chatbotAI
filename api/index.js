@@ -30,8 +30,14 @@ app.get('/signup', async (req, res) => {
   logEndpointRequest('post', 'signup', req)
 })
 app.get('/response', async (req, res) => {
-  res.status(200).json({message: 'Hello!'})
-  logger.info(`GET /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
+  let token = req.headers.token
+  await checkTokenPromise(token).then(response => {
+    res.status(200).json({code: 200, message: 'Hello!'})
+    logger.info(`GET /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
+  }).catch(response => {
+    logger.info(`GET /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
+    res.status(response.code).json({code: response.code, message: response.message})
+  })
 })
 app.post('/train', async (req, res) => {
   const {token} = req.headers
