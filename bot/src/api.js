@@ -50,9 +50,11 @@ pingAndChangeStatus = (user, client) => {
 exports.ping = async client => {
   let lastApiVersion = await db.getConfigValue("api-lastversion")
   return new Promise((resolve, reject) => {
+    let startPing = new Date()
     fetch(process.env.API + '/ping', {
       method: "GET"
     }).then(async res => {
+      logger.info(`Successfully pinges API in ${(new Date - startPing)}ms`)
       if(!ApiIsOnline && res.status === 200) return reject() //change api state to online
 
       if(ApiIsOnline && res.status === 200) resolve()
