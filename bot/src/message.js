@@ -1,7 +1,6 @@
 const fetch = require('node-fetch')
 
 const api = require('./api')
-const db = require('./db')
 const cache = require('./cache')
 const embed = require('./embed')
 
