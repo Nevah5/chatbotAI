@@ -41,8 +41,8 @@ app.post('/response', async (req, res) => {
 })
 app.post('/train', async (req, res) => {
   const {token} = req.headers
-  await checkTokenPromise(token).then(_ => {
-    res.status(201).json({code: 201, message: "Created!"})
+  await checkTokenPromise(token).then(response => {
+    res.status(response.code).json({code: response.code, message: response.message})
   }).catch(response =>{
     res.status(response.code).json({code: response.code, message: response.message})
   })
