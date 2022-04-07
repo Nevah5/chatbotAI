@@ -27,9 +27,9 @@ exports.updateConfigValue = (id, value) => {
   })
 }
 
-exports.addChat = (id) => {
+exports.addChat = (channelId, guildId) => {
   return new Promise((resolve, reject) => {
-    con.query(`INSERT INTO chats VALUES (null, '${id}')`)
+    con.query(`INSERT INTO chats VALUES (null, '${channelId}', '${guildId}')`)
     resolve()
   })
 }
@@ -51,7 +51,7 @@ exports.isChat = (id) => {
 
 exports.getChats = (id) => {
   return new Promise((resolve, reject) => {
-    con.query(`SELECT channelId FROM chats`, (err, results) => {
+    con.query(`SELECT channelId, guildId FROM chats`, (err, results) => {
       resolve(results)
     })
   })

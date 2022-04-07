@@ -37,3 +37,12 @@ exports.apiVersionChange = (data) => {
   .setColor("#3FBA54")
   .setTimestamp()
 }
+
+exports.chatAPIstatusUpdate = (message, col) => {
+  let color = ["#33BA6B", "#E94649"]
+  return new MessageEmbed()
+  .setTitle("API Status update")
+  .setColor(color[col ? 0 : 1])
+  .setDescription(message)
+  .setTimestamp()
+}

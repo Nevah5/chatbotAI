@@ -226,7 +226,7 @@ toggleChat = async interaction => {
     return await db.removeChat(channelId)
   }
   interaction.editReply({embeds: [embed.success(`The channel <#${channelId}> is\nnow a chat.`)]})
-  db.addChat(channelId)
+  db.addChat(channelId, interaction.guild.id)
   logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - added ${getChannelMessage(interaction)}`)
 }
 

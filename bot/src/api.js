@@ -96,6 +96,15 @@ changeStatus = async (user, client) => {
   user.setActivity(data.activity)
   //send information message
   channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus(data.apiStatusEmbed)]})
+  //send embed in every chat channel
+  let chats = await db.getChats()
+  let apiNoResponseMessage = await db.getConfigValue('api-noresponse_message')
+  let apiBackOnlineMessage = "The API is back online."
+  let message = ApiIsOnline ? apiBackOnlineMessage : apiNoResponseMessage
+  chats.forEach(chat => {
+    let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
+    channel.send({embeds: [embed.chatAPIstatusUpdate(message, ApiIsOnline)]})
+  });
 }
 
 exports.isApiOnline = _ => {
