@@ -49,7 +49,7 @@ exports.isChat = (id) => {
   })
 }
 
-exports.getChats = (id) => {
+exports.getChats = () => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT channelId, guildId FROM chats`, (err, results) => {
       resolve(results)

@@ -11,7 +11,7 @@ const client = new Client({
 require("dotenv").config()
 
 const commands = require('./src/commands')
-const embed = require('./src/embed')
+const cache = require('./src/cache')
 const message = require('./src/message')
 const db = require('./src/db')
 const api = require('./src/api')
@@ -21,6 +21,7 @@ const logger = require('./src/logger')
 api.checkToken(process.env.API_TOKEN)
 
 client.on('ready', async () => {
+  await cache.initialize() //wait for cache to load
   logger.info(`Logged in as ${client.user.tag}!`)
 
   api.checkApi(client.user, client)

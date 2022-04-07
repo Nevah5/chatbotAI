@@ -3,6 +3,7 @@ var logger = require('./logger')
 const db = require('./db')
 const api = require('./api')
 const embed = require('./embed')
+const cache = require('./cache')
 const { ExceptionHandler } = require('winston')
 
 exports.build = (commands) => {
@@ -132,9 +133,11 @@ configResetHandler = async (interaction, client) => {
   switch(cmd){
     case "api-noresponse_message":
       await db.updateConfigValue('api-noresponse_message', defaultConfigs["api-noresponse_message"])
+      cache.setCache('api-noresponse_message', defaultConfigs["api-noresponse_message"])
       break
       case "api-noresponse_status":
         await db.updateConfigValue('api-noresponse_status', defaultConfigs["api-noresponse_status"])
+        cache.setCache('api-noresponse_status', defaultConfigs["api-noresponse_status"])
         if(!api.isApiOnline()) client.user.setActivity(defaultConfigs["api-noresponse_status"])
       break
   }
@@ -148,6 +151,7 @@ configSetHandler = async (interaction, client) => {
     case "training":
       let channelId = interaction.channel.id
       await db.updateConfigValue('bot-training_channel', channelId)
+      cache.setCache('bot-training_channel', channelId)
 
       interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
       logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
@@ -155,29 +159,33 @@ configSetHandler = async (interaction, client) => {
     case "api-noresponse_message":
       let newMessage = interaction.options.getString("value")
       await db.updateConfigValue('api-noresponse_message', newMessage)
-      interaction.editReply({embeds: [embed.success("Successfully updated the\nresponse message.")]})
+      cache.setCache('api-noresponse_message', newMessage)
+      interaction.editReply({embeds: [embed.success(`Successfully updated the\nresponse message to:\n\n${newMessage}`)]})
       break
     case "api-noresponse_status":
       let newStatus = interaction.options.getString("value")
+      console.log(newStatus);
       await db.updateConfigValue('api-noresponse_status', newStatus)
+      cache.setCache('api-noresponse_status', newStatus)
       if(!api.isApiOnline()) client.user.setActivity(newStatus)
-      interaction.editReply({embeds: [embed.success("Successfully updated the\nstatus.")]})
+      interaction.editReply({embeds: [embed.success(`Successfully updated the\nstatus to:\n\n${newStatus}`)]})
       break
     case "bot-permission_role":
       let newRole = interaction.options.getRole('role')
       await db.updateConfigValue('bot-permission_role', newRole.id)
+      cache.setCache('bot-permission_role', newRole.id)
       interaction.editReply({embeds: [embed.success(`Successfully changed the\nrole to <@&${newRole.id}>!`)]})
       break
   }
 }
 
 showConfig = async (interaction) => {
-  let api_version = await db.getConfigValue('api-lastversion')
-  let api_Noresponse = await db.getConfigValue('api-noresponse_message')
-  let bot_TrainingChannel = await db.getConfigValue('bot-training_channel')
-  let api_NoresponseStatus = await db.getConfigValue('api-noresponse_status')
-  let botRoleId = await db.getConfigValue('bot-permission_role')
-  let chats = await db.getChats()
+  let api_version = cache.getCache('api-lastversion')
+  let api_Noresponse = cache.getCache('api-noresponse_message')
+  let api_NoresponseStatus = cache.getCache('api-noresponse_status')
+  let bot_TrainingChannel = cache.getCache('bot-training_channel')
+  let botRoleId = cache.getCache('bot-permission_role')
+  let chats = cache.getCache('chats')
 
   let overviewEmbed = new MessageEmbed()
   .setTitle("Config Overview")
@@ -210,7 +218,7 @@ showConfig = async (interaction) => {
 
 isAllowed = async interaction => {
   return new Promise(async (resolve, reject) => {
-    let roleId = await db.getConfigValue('bot-permission_role');
+    let roleId = cache.getCache('bot-permission_role')
     if(interaction.user.id === process.env.OWNER_ID) return resolve()
     if(interaction.member.roles.cache.filter(role => role.id === roleId).size === 1) return resolve()
     reject()

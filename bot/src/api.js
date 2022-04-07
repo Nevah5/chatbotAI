@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
 
 const embed = require('./embed')
+const cache = require('./cache')
 const db = require('./db')
 const logger = require('./logger')
 
@@ -47,7 +48,7 @@ pingAndChangeStatus = (user, client) => {
 
 //ping the api
 exports.ping = async client => {
-  let lastApiVersion = await db.getConfigValue("api-lastversion")
+  let lastApiVersion = cache.getCache('api-lastversion')
   return new Promise((resolve, reject) => {
     let startPing = new Date()
     fetch(process.env.API + '/ping', {
@@ -72,12 +73,13 @@ exports.ping = async client => {
 onApiVersionChange = async (client, newApiVersion) => {
   //get data
   let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
-  let oldApiVersion = await db.getConfigValue('api-lastversion')
+  let oldApiVersion = cache.getCache('api-lastversion')
 
   //send message that api version chanted
   channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion})]})
   //update last api version in database
   await db.updateConfigValue('api-lastversion', newApiVersion)
+  cache.setCache('api-lastversion', newApiVersion)
 }
 
 //update bot's profile
@@ -87,7 +89,7 @@ changeStatus = async (user, client) => {
   let data = {
     pfp: ApiIsOnline ? '../src/logo.png' : '../src/logo-api_noresponse.png',
     status: ApiIsOnline ? 'online' : 'dnd',
-    activity: ApiIsOnline ? null : await db.getConfigValue('api-noresponse_status'),
+    activity: ApiIsOnline ? null : cache.getCache('api-noresponse_status'),
     apiStatusEmbed: ApiIsOnline ? 'online' : 'offline'
   }
 
@@ -98,7 +100,7 @@ changeStatus = async (user, client) => {
   channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus(data.apiStatusEmbed)]})
   //send embed in every chat channel
   let chats = await db.getChats()
-  let apiNoResponseMessage = await db.getConfigValue('api-noresponse_message')
+  let apiNoResponseMessage = cache.getCache('api-noresponse_message')
   let apiBackOnlineMessage = "The API is back online."
   let message = ApiIsOnline ? apiBackOnlineMessage : apiNoResponseMessage
   chats.forEach(chat => {
