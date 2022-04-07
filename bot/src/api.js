@@ -54,7 +54,7 @@ exports.ping = async client => {
     fetch(process.env.API + '/ping', {
       method: "GET"
     }).then(async res => {
-      logger.info(`Successfully pinged API in ${(new Date - startPing)}ms`)
+      logger.debug(`Successfully pinged API in ${(new Date - startPing)}ms`)
       if(!ApiIsOnline && res.status === 200) return reject() //change api state to online
 
       if(ApiIsOnline && res.status === 200) resolve()
@@ -106,7 +106,7 @@ changeStatus = async (user, client) => {
   chats.forEach(chat => {
     let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
     channel.send({embeds: [embed.chatAPIstatusUpdate(message, ApiIsOnline)]})
-  });
+  })
 }
 
 exports.isApiOnline = _ => {

@@ -21,7 +21,7 @@ exports.initialize = async _ => {
 }
 
 exports.setCache = (id, value) => {
-  cache[id] = value;
+  cache[id] = value
 }
 exports.getCache = (id) => {
   return cache[id]

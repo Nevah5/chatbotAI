@@ -98,6 +98,18 @@ exports.build = (commands) => {
       }
     ]
   })
+  commands.create({
+    name: 'broadcast',
+    description: 'Broadcast something to every chat.',
+    options: [
+      {
+        name: 'message',
+        description: 'The message you want to broadcast.',
+        type: 'STRING',
+        required: true
+      }
+    ]
+  })
   logger.debug(`Successfully built all commands.`)
 }
 
@@ -116,10 +128,23 @@ exports.handler = async (interaction, client) => {
         if(subCmdGroup === 'set') return configSetHandler(interaction, client)
         if(subCmdGroup === 'toggle' && subCmd === 'chat') return toggleChat(interaction)
       }).catch(async e => {
-        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")], ephemeral: true})
+        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
         logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
       })
       break
+    case "broadcast":
+      await interaction.deferReply({ephemeral: true})
+      isAllowed(interaction).then(async _ => {
+        let chats = cache.getCache('chats')
+        chats.forEach(chat => {
+          let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
+          channel.send({embeds: [embed.broadcastMessage(interaction)]})
+        })
+        interaction.editReply({embeds: [embed.success("Broadcast sent!")]})
+      }).catch(async e => {
+        interaction.editReply({embeds: [embed.error("You dont have the rights to\ndo that!")]})
+        logger.info(`${getUserMessage(interaction)} failed to run ${getCommandMessage(interaction)} in ${getChannelMessage(interaction)}`)
+      })
   }
 }
 
@@ -164,7 +189,6 @@ configSetHandler = async (interaction, client) => {
       break
     case "api-noresponse_status":
       let newStatus = interaction.options.getString("value")
-      console.log(newStatus);
       await db.updateConfigValue('api-noresponse_status', newStatus)
       cache.setCache('api-noresponse_status', newStatus)
       if(!api.isApiOnline()) client.user.setActivity(newStatus)

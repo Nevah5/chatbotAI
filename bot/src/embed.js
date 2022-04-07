@@ -46,3 +46,12 @@ exports.chatAPIstatusUpdate = (message, col) => {
   .setDescription(message)
   .setTimestamp()
 }
+
+exports.broadcastMessage = (interaction) => {
+  let message = interaction.options.getString('message')
+  return new MessageEmbed()
+  .setTitle('Broadcast Message')
+  .setDescription(message)
+  .setTimestamp()
+  .setFooter({iconURL: interaction.user.avatarURL(), text: interaction.user.tag})
+}
