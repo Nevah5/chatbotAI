@@ -2,14 +2,20 @@ var express = require('express')
 var app = express()
 const generateApiKey = require('generate-api-key')
 require('dotenv').config()
-const {API_PORT} = process.env
+const {API_PORT, API_VERSION} = process.env
+var net
+const ai = require('./src/ai').start()
+.then(aiNet => {
+  net = aiNet
+  app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
+})
 
 const db = require('./src/db')
 const logger = require('./src/logger')
 
 //Endpoints
 app.get('/ping', (req, res) => {
-  res.json({code: 200, message: "Pong!", version: process.env.API_VERSION})
+  res.json({code: 200, message: "Pong!", version: API_VERSION})
   logEndpointRequest('get', 'ping', req)
 })
 app.post('/verify', async (req, res) => {
@@ -61,5 +67,3 @@ checkTokenPromise = async (token) => {
     resolve({code: 200, message: "Ok!"})
   })
 }
-
-app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
