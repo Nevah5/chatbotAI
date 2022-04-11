@@ -1,7 +1,10 @@
 const fs = require('fs')
 const logger = require('./logger')
 const brain = require('brain.js')
+const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
+
+const iterations = 20000
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
@@ -11,7 +14,21 @@ exports.start = _ => {
       net.fromJSON(JSON.stringify(data))
     }else{
       logger.info("Training Network.")
-      //train
+      let start = new Date()
+      net.train([
+        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
+        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
+        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
+        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
+      ],{
+        iterations: iterations,
+        log: data => {
+          let iteration = data.split('iterations: ')[1].split(', ')[0]
+          let percentage = 100 / iterations * parseInt(iteration)
+          pb.render(percentage, start)
+        }
+      })
+      pb.render(100, start)
     }
     resolve()
   })
