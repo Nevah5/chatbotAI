@@ -5,18 +5,15 @@ const net = new brain.recurrent.LSTM()
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
-    //check if trained
-    if(fs.existsSync('trained.json')){
-      //read trained data
-      fs.readFileSync('trained.json', (err, data) => {
-        net.fromJSON(JSON.parse(data.toString()))
-      })
+    if(fs.existsSync('./data/data.json')){
+      logger.info("Network already trained.")
+      const data = fs.readFileSync('./data/data.json').toString()
+      net.fromJSON(JSON.stringify(data))
     }else{
-      //else train algo
-      this.train()
+      logger.info("Training Network.")
+      //train
     }
-    //resolve trained network
-    resolve(net)
+    resolve()
   })
 }
 
