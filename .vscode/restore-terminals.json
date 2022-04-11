@@ -1,0 +1,26 @@
+{
+  "artificialDelayMilliseconds": 300,
+  "keepExistingTerminalsOpen": false,
+  "runOnStartup": true,
+  "terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "api",
+          "commands": ["cd api"]
+        },
+        {
+          "name": "bot",
+          "commands": ["cd bot"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "git"
+        }
+      ]
+    }
+  ]
+}
