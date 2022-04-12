@@ -1,7 +1,7 @@
 const spacer = "."
 const filled = ">"
 const size = 30
-var last = 0
+var last = -1
 
 exports.render = (percentage, startedTime) => {
   if(Math.floor(percentage) == last) return
@@ -16,7 +16,8 @@ exports.render = (percentage, startedTime) => {
   let duration = ((new Date - startedTime) / 1000).toFixed(2)
   let estimated = (duration / percentage * 100).toFixed(2)
   let remaining = calculateReadableTime((estimated - duration).toFixed(2))
-  process.stdout.write(`${bar} ${percentage}% - ${duration}s (~${remaining} remaining)`);
+  let remainingOutput = remaining !== "NaNs" ? ` (~${remaining} remaining)` : ``
+  process.stdout.write(`${bar} ${percentage}% - ${duration}s${remainingOutput}`)
 
   //write new line when finished
   if(percentage == 100) process.stdout.write("\n")
