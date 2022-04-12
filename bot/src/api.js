@@ -104,8 +104,8 @@ changeStatus = async (user, client) => {
   if(production) user.setAvatar(data.pfp) //update pfp when on production
   user.setStatus(data.status)
   user.setActivity(data.activity)
-  //send information message
-  channel.send({content: `<@${process.env.OWNER_ID}>`, embeds: [embed.apiStatus(data.apiStatusEmbed)]})
+  //send information message to dev via dm
+  client.users.cache.get(process.env.OWNER_ID).send({embeds: [embed.apiStatus(data.apiStatusEmbed)]})
   //send embed in every chat channel
   let chats = await db.getChats()
   let apiNoResponseMessage = cache.getCache('api-noresponse_message')
