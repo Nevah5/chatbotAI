@@ -4,23 +4,21 @@ const brain = require('brain.js')
 const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
 
-const iterations = 20000
+const iterations = 2000
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
     if(fs.existsSync('./data/data.json')){
       logger.info("Network already trained.")
       const data = fs.readFileSync('./data/data.json').toString()
-      net.fromJSON(JSON.stringify(data))
+      net.fromJSON(JSON.parse(data))
     }else{
       logger.info("Training Network.")
+      if(!fs.existsSync('./data/trainingdata.json')) return reject("No trainingdata.")
+      const data = JSON.stringify(fs.readFileSync('./data/trainingdata.json').toString())
       let start = new Date()
-      net.train([
-        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
-        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
-        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
-        'hello', 'wonderful', 'amazing', 'wow', 'crazy',
-      ],{
+      pb.render(0, start)
+      net.train(data, {
         iterations: iterations,
         log: data => {
           let iteration = data.split('iterations: ')[1].split(', ')[0]
@@ -29,6 +27,9 @@ exports.start = _ => {
         }
       })
       pb.render(100, start)
+      fs.writeFileSync('./data/data.json', JSON.stringify(net.toJSON()))
+      logger.info(`Training finished in ${pb.calculateReadableTime((new Date - start) / 1000)}`)
+      logger.info("Wrote network to data.json")
     }
     resolve()
   })

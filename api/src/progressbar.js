@@ -15,7 +15,7 @@ exports.render = (percentage, startedTime) => {
   let bar = `[ ${filled.repeat(size / 100 * percentage)}${spacer.repeat(size - Math.floor((size / 100 * percentage)))} ]`
   let duration = ((new Date - startedTime) / 1000).toFixed(2)
   let estimated = (duration / percentage * 100).toFixed(2)
-  let remaining = calculateReadableTime((estimated - duration).toFixed(2))
+  let remaining = this.calculateReadableTime((estimated - duration).toFixed(2))
   let remainingOutput = remaining !== "NaNs" ? ` (~${remaining} remaining)` : ``
   process.stdout.write(`${bar} ${percentage}% - ${duration}s${remainingOutput}`)
 
@@ -23,7 +23,7 @@ exports.render = (percentage, startedTime) => {
   if(percentage == 100) process.stdout.write("\n")
 }
 
-const calculateReadableTime = seconds => {
+exports.calculateReadableTime = seconds => {
   let string = ""
 
   let hours =  Math.floor(seconds / 60 / 60)

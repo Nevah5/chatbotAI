@@ -72,6 +72,9 @@ checkTokenPromise = async (token) => {
   })
 }
 
-// ai.start().then(_=> {
-// })
-app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
+ai.start().then(_=> {
+  db.con.connect() //connect database here because else timeout
+  app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
+}).catch(e => {
+  logger.error(e.message)
+})
