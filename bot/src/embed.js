@@ -34,6 +34,12 @@ exports.apiVersionChange = (data) => {
   return new MessageEmbed()
   .setTitle("API Version change")
   .setDescription(`The version of the API\nchanged from ${data.old}\nto ${data.new}.`)
+  .addFields(
+    {
+      name: "Changelog",
+      value: "```diff\n" + data.changelog + "\n```"
+    }
+  )
   .setColor("#3FBA54")
   .setTimestamp()
 }

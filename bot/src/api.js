@@ -71,15 +71,23 @@ exports.ping = async client => {
 }
 
 onApiVersionChange = async (client, newApiVersion) => {
-  //get data
-  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
-  let oldApiVersion = cache.getCache('api-lastversion')
+  fetch(process.env.API + `/changelog/${newApiVersion}`, {
+    method: "GET"
+  }).then(async res => {
+    let data = {changelog: "- [ NO CHANGELOG FOUND ]"}
+    if(res.status === 200) data = await res.json()
 
-  //send message that api version chanted
-  channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion})]})
-  //update last api version in database
-  await db.updateConfigValue('api-lastversion', newApiVersion)
-  cache.setCache('api-lastversion', newApiVersion)
+    let oldApiVersion = cache.getCache('api-lastversion')
+    const chats = cache.getCache("chats")
+    chats.forEach(chat => {
+      let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
+      channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion, changelog: data.changelog})]})
+    });
+
+    //update last api version in database
+    await db.updateConfigValue('api-lastversion', newApiVersion)
+    cache.setCache('api-lastversion', newApiVersion)
+  })
 }
 
 //update bot's profile
