@@ -87,7 +87,7 @@ onApiVersionChange = async (client, newApiVersion) => {
       }else{ //delete channel if not existing anymore
         error.channelNotExists(chat)
       }
-    });
+    })
 
     //update last api version in database
     await db.updateConfigValue('api-lastversion', newApiVersion)
@@ -127,5 +127,5 @@ changeStatus = async (user, client) => {
 }
 
 exports.isApiOnline = _ => {
-  return ApiIsOnline;
+  return ApiIsOnline
 }
