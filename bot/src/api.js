@@ -4,6 +4,7 @@ const embed = require('./embed')
 const cache = require('./cache')
 const db = require('./db')
 const logger = require('./logger')
+const error = require('./error')
 
 var ApiIsOnline = true
 
@@ -79,9 +80,13 @@ onApiVersionChange = async (client, newApiVersion) => {
 
     let oldApiVersion = cache.getCache('api-lastversion')
     const chats = cache.getCache("chats")
-    chats.forEach(chat => {
+    chats.forEach(async chat => {
       let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
-      channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion, changelog: data.changelog})]})
+      if(typeof channel == "object"){
+        channel.send({embeds: [embed.apiVersionChange({old: oldApiVersion, new: newApiVersion, changelog: data.changelog})]})
+      }else{ //delete channel if not existing anymore
+        error.channelNotExists(chat)
+      }
     });
 
     //update last api version in database
@@ -111,9 +116,13 @@ changeStatus = async (user, client) => {
   let apiNoResponseMessage = cache.getCache('api-noresponse_message')
   let apiBackOnlineMessage = "The API is back online."
   let message = ApiIsOnline ? apiBackOnlineMessage : apiNoResponseMessage
-  chats.forEach(chat => {
+  chats.forEach(async chat => {
     let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
-    channel.send({embeds: [embed.chatAPIstatusUpdate(message, ApiIsOnline)]})
+    if(typeof channel == "object"){
+      channel.send({embeds: [embed.chatAPIstatusUpdate(message, ApiIsOnline)]})
+    }else{ //delete channel if not existing anymore
+      error.channelNotExists(chat)
+    }
   })
 }
 

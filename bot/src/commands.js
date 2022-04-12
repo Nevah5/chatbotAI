@@ -138,7 +138,11 @@ exports.handler = async (interaction, client) => {
         let chats = cache.getCache('chats')
         chats.forEach(chat => {
           let channel = client.guilds.cache.get(chat.guildId).channels.cache.get(chat.channelId)
-          channel.send({embeds: [embed.broadcastMessage(interaction)]})
+          if(typeof channel == "object"){
+            channel.send({embeds: [embed.broadcastMessage(interaction)]})
+          }else{ //delete channel if not existing anymore
+            error.channelNotExists(chat)
+          }
         })
         interaction.editReply({embeds: [embed.success("Broadcast sent!")]})
       }).catch(async e => {
