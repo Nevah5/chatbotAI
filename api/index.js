@@ -53,7 +53,7 @@ app.post('/train', async (req, res) => {
 })
 app.get('/changelog/:id', (req, res) => {
   let version = req.params.id
-  if(!fs.existsSync(`./changelogs/${version}.txt`)) return res.json({code: 404, message: "Not Found!"})
+  if(!fs.existsSync(`./changelogs/${version}.txt`)) return res.status(404).json({code: 404, message: "Not Found!"})
   const data = fs.readFileSync(`./changelogs/${version}.txt`).toString()
   res.json({code: 200, message: "Ok!", changelog: data})
   logEndpointRequest('get', 'changelog', req)
