@@ -1,6 +1,7 @@
 var express = require('express')
 var app = express()
 const generateApiKey = require('generate-api-key')
+const fs = require('fs')
 require('dotenv').config()
 const {API_PORT, API_VERSION} = process.env
 const ai = require('./src/ai')
@@ -50,6 +51,13 @@ app.post('/train', async (req, res) => {
   })
   logEndpointRequest('post', 'train', req)
 })
+app.get('/changelog/:id', (req, res) => {
+  let version = req.params.id
+  if(!fs.existsSync(`./changelogs/${version}.txt`)) return res.json({code: 404, message: "Not Found!"})
+  const data = fs.readFileSync(`./changelogs/${version}.txt`).toString()
+  res.json({code: 200, message: "Ok!", changelog: data})
+  logEndpointRequest('get', 'changelog', req)
+})
 
 //Log templates
 logEndpointRequest = (method, endpoint, req) => {
@@ -64,6 +72,6 @@ checkTokenPromise = async (token) => {
   })
 }
 
-ai.start().then(_=> {
-  app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
-})
+// ai.start().then(_=> {
+// })
+app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
