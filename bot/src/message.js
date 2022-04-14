@@ -18,8 +18,9 @@ exports.sendResponse = async msg => {
     }
   }).then(async res => {
     if(res.status === 401) return msg.reply({embeds: [embed.error("The API token is not valid.")]})
+    if(res.status === 500) return msg.reply({embeds: [embed.error("Internal API Error.")]})
     res = await res.json()
-    msg.reply({content: res.message})
+    msg.reply({content: res.response})
   }).catch(res => {
     msg.reply({embeds: [embed.error("The API did not respond.")]})
   })

@@ -1,7 +1,7 @@
 const mysql = require('mysql')
 require('dotenv').config()
 
-exports.con = mysql.createConnection({
+var con = mysql.createConnection({
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
@@ -9,7 +9,7 @@ exports.con = mysql.createConnection({
   port: process.env.DATABASE_PORT,
   charset: 'utf8'
 })
-//connect to db in index.js
+con.connect()
 
 exports.checkAPIToken = token => {
   return new Promise((resolve, reject) => {

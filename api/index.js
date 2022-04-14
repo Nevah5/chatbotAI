@@ -35,7 +35,13 @@ app.get('/signup', async (req, res) => {
 app.post('/response', async (req, res) => {
   let token = req.headers.token
   await checkTokenPromise(token).then(_ => {
-    res.status(200).json({code: 200, message: 'Hello!'})
+    let AIResponse = ai.run(req.headers.message)
+    if(AIResponse === ""){
+      logger.error(`500 - Internal Server Error on endpoint /response`)
+      logger.error(`AI returned empty string`)
+      return res.status(500).json({code: 500, message: "Internal Server Error!"})
+    }
+    res.status(200).json({code: 200, message: "Ok!", response: AIResponse})
     logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
   }).catch(response => {
     logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
@@ -73,7 +79,6 @@ checkTokenPromise = async (token) => {
 }
 
 ai.start().then(_=> {
-  db.con.connect() //connect database here because else timeout
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
 }).catch(e => {
   logger.error(e.message)

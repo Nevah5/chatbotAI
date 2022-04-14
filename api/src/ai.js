@@ -4,7 +4,7 @@ const brain = require('brain.js')
 const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
 
-const iterations = 2000
+const iterations = 20000
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
@@ -44,4 +44,9 @@ exports.train = _ =>{
   //log
   logger.info(`Training finished in ${pb.calculateReadableTime((new Date - start) / 1000)}`)
   logger.info("Wrote network to data.json")
+}
+
+exports.run = msg => {
+  let filtered = msg.replace(/[^a-zA-Z ]+/g, "").toLowerCase()
+  return net.run(filtered)
 }
