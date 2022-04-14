@@ -1,16 +1,13 @@
-{
-  "input": [
-    "hi",
-    "hello",
-    "hi there",
-    "howdy",
-    "hey",
-    "heya",
-    "hai",
-    "what up",
-    "whats up",
-    "howdy",
-    "hello"
-  ],
-  "output": "Hello!"
-}
+[
+  {"input": "hi", "output": 1},
+  {"input": "hello", "output": 1},
+  {"input": "hi there", "output": 1},
+  {"input": "howdy", "output": 1},
+  {"input": "heya", "output": 1},
+  {"input": "hey", "output": 1},
+  {"input": "what up", "output": 1},
+  {"input": "whats up", "output": 1},
+  {"input": "howdy", "output": 1},
+  {"input": "hello", "output": 1},
+  {"input": "hai", "output": 1}
+]

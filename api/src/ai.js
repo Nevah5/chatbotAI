@@ -4,7 +4,7 @@ const brain = require('brain.js')
 const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
 
-const iterations = 200
+const iterations = 2000
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
@@ -47,6 +47,9 @@ exports.train = _ =>{
 }
 
 exports.run = msg => {
-  let filtered = msg.replace(/[^a-zA-Z ]+/g, "").toLowerCase()
-  return net.run(filtered)
+  let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
+  let run = net.run({input: filtered})
+  console.log(run)
+  logger.info(`AI output: ${run}`)
+  return run
 }

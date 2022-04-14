@@ -43,8 +43,7 @@ app.post('/response', async (req, res) => {
   await checkTokenPromise(token).then(_ => {
     let AIResponse = ai.run(req.headers.message)
     if(AIResponse === ""){
-      logger.error(`500 - Internal Server Error on endpoint /response`)
-      logger.error(`AI returned empty string`)
+      logger.error(`500 - Internal Server Error on endpoint /response - AI returned emtpy string`)
       return res.status(500).json({code: 500, message: "Internal Server Error!"})
     }
     res.status(200).json({code: 200, message: "Ok!", response: AIResponse})
