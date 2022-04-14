@@ -4,7 +4,7 @@ const brain = require('brain.js')
 const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
 
-const iterations = 20000
+const iterations = 200
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
