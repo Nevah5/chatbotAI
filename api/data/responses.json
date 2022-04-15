@@ -1,0 +1,10 @@
+{
+  "1": ["Hello!", "What's up?", "Hey there!", "Hello stranger!", "Hey, how are you?", "Howdy!", "Hi!"],
+  "2": ["Good bye!", "Cya!", "See ya!", "See you!", "Bye!", "Good night!", "Good evening!", "See you tomorrow!", "Bye bye!"],
+  "3": ["Yes, I know!", "Yeah I'm funny, right?", "Indeed.", "What's so funny?"],
+  "4": ["Sunny", "Rainy", "Cloudy", "Well, do I look like I'm a weatherman?"],
+  "5": ["Same!", "Agree.", "Yup!", "Hmmmm, yeah!", "No thanks!"],
+  "6": ["Why?"],
+  "7": ["I'm fine, what about you?", "I'm feeling amazing!", "What a wonderful day, isn't it?"],
+  "8": ["I'm not a support bot!"]
+}

@@ -6,12 +6,15 @@ const net = new brain.recurrent.LSTM()
 
 const iterations = 200
 
+var responses = {}
+
 exports.start = _ => {
   return new Promise((resolve, reject) => {
+    responses = JSON.parse(fs.readFileSync('./data/responses.json').toString())
     if(fs.existsSync('./data/data.json')){
       logger.info("Network already trained.")
       //read network
-      const data = fs.readFileSync('./data/data.json', 'utf-8').toString()
+      const data = fs.readFileSync('./data/data.json').toString()
       net.fromJSON(JSON.parse(data))
     }else{
       logger.info("Training Network.")
@@ -46,10 +49,13 @@ exports.train = _ =>{
   logger.info("Wrote network to data.json")
 }
 
+const getResponse = group => {
+  let responseGroupArray = responses[group]
+  return responseGroupArray[Math.floor(Math.random() * responseGroupArray.length)]
+}
+
 exports.run = msg => {
   let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
-  console.log(filtered);
-  let run = net.run(filtered)
-  logger.info(`AI output: ${run}`)
-  return run
+  let run = net.run(filtered) || 1
+  return getResponse(parseInt(run))
 }
