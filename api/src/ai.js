@@ -57,5 +57,6 @@ const getResponse = group => {
 exports.run = msg => {
   let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
   let run = net.run(filtered) || 1
+  run = run.replace(/[^0-9]/g, "").substr(-1) //remove everything except numbers and get first
   return getResponse(parseInt(run))
 }

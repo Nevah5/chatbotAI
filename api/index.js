@@ -49,6 +49,7 @@ app.post('/response', async (req, res) => {
     res.status(200).json({code: 200, message: "Ok!", response: AIResponse})
     logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
   }).catch(response => {
+    console.log(response);
     logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
     res.status(response.code).json({code: response.code, message: response.message})
   })

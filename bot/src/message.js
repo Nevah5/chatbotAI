@@ -8,7 +8,7 @@ exports.sendResponse = async msg => {
   if(!api.isApiOnline() && msg.author.id === process.env.OWNER_ID) return
   if(!api.isApiOnline()) msg.delete()
   if(!api.isApiOnline()) return msg.author.send({embeds: [embed.error(cache.getCache('api-noresponse_message'))]})
-  msg.channel.sendTyping()
+  await msg.channel.sendTyping()
   //move this fetch into api.js
   await fetch(process.env.API + '/response', {
     method: 'POST',
