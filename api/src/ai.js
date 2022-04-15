@@ -4,14 +4,14 @@ const brain = require('brain.js')
 const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
 
-const iterations = 2000
+const iterations = 200
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
     if(fs.existsSync('./data/data.json')){
       logger.info("Network already trained.")
       //read network
-      const data = fs.readFileSync('./data/data.json').toString()
+      const data = fs.readFileSync('./data/data.json', 'utf-8').toString()
       net.fromJSON(JSON.parse(data))
     }else{
       logger.info("Training Network.")
@@ -24,7 +24,7 @@ exports.start = _ => {
 exports.train = _ =>{
   if(!fs.existsSync('./data/trainingdata.json')) return reject("No trainingdata.")
 
-  const data = JSON.stringify(fs.readFileSync('./data/trainingdata.json').toString())
+  const data = JSON.parse(fs.readFileSync('./data/trainingdata.json').toString())
   let start = new Date()
 
   pb.render(0, start)
@@ -48,8 +48,8 @@ exports.train = _ =>{
 
 exports.run = msg => {
   let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
-  let run = net.run({input: filtered})
-  console.log(run)
+  console.log(filtered);
+  let run = net.run(filtered)
   logger.info(`AI output: ${run}`)
   return run
 }
