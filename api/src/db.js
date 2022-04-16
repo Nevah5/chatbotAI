@@ -25,3 +25,11 @@ exports.addAPIToken = token => {
     resolve()
   })
 }
+
+exports.saveMessage = (token, msg) => {
+  return new Promise((resolve, reject) => {
+    con.query(`INSERT INTO requests (tokenFK, msg) VALUES ((SELECT ID FROM apiTokens WHERE token='${token}'), '${msg}') RETURNING ID`, (err, results) => {
+      resolve(results[0].ID)
+    })
+  })
+}
