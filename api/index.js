@@ -40,9 +40,10 @@ app.get('/signup', async (req, res) => {
 })
 app.post('/response', async (req, res) => {
   let token = req.headers.token
-  await checkTokenPromise(token).then(_ => {
-    let responseID = db.saveMessage(token, req.headers.message)
+  await checkTokenPromise(token).then(async _ => {
+    let responseID = await db.saveMessage(token, req.headers.message)
     let AIResponse = ai.run(req.headers.message)
+    db.saveResponse(responseID, AIResponse)
     if(AIResponse === ""){
       logger.error(`500 - Internal Server Error on endpoint /response - AI returned emtpy string`)
       return res.status(500).json({code: 500, message: "Internal Server Error!"})

@@ -33,3 +33,7 @@ exports.saveMessage = (token, msg) => {
     })
   })
 }
+
+exports.saveResponse = (id, msg) => {
+  con.query(`UPDATE requests SET response='${msg}' WHERE ID=${id}`)
+}
