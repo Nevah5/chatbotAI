@@ -1,4 +1,4 @@
 **/node_modules
 .env
 **/logs
-**/api/data
+api/data/data.json
