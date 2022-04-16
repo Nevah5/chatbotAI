@@ -41,16 +41,11 @@ app.get('/signup', async (req, res) => {
 app.post('/response', async (req, res) => {
   let token = req.headers.token
   await checkTokenPromise(token).then(async _ => {
-    let responseID = await db.saveMessage(token, req.headers.message)
-    let AIResponse = ai.run(req.headers.message)
-    db.saveResponse(responseID, AIResponse)
-    if(AIResponse === ""){
-      logger.error(`500 - Internal Server Error on endpoint /response - AI returned emtpy string`)
-      return res.status(500).json({code: 500, message: "Internal Server Error!"})
-    }
-    res.status(200).json({code: 200, message: "Ok!", response: AIResponse})
-    logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} - ${req.headers.message}`)
-  }).catch(response => {
+    ai.run(token, req.headers.message).then(msg => { //get response from ai
+      res.status(200).json({code: 200, message: "Ok!", response: msg})
+      logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"}`)
+    })
+  }).catch(response => { //Token invalid
     console.log(response);
     logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
     res.status(response.code).json({code: response.code, message: response.message})

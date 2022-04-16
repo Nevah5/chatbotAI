@@ -3,14 +3,13 @@ const logger = require('./logger')
 const brain = require('brain.js')
 const pb = require('./progressbar')
 const net = new brain.recurrent.LSTM()
+const db = require('./db')
 
-const iterations = 200
+const iterations = 10000
 
-var responses = {}
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
-    responses = JSON.parse(fs.readFileSync('./data/responses.json').toString())
     if(fs.existsSync('./data/data.json')){
       logger.info("Network already trained.")
       //read network
@@ -49,14 +48,20 @@ exports.train = _ =>{
   logger.info("Wrote network to data.json")
 }
 
+const responses = require('../data/responses.json')
 const getResponse = group => {
-  let responseGroupArray = responses[group]
-  return responseGroupArray[Math.floor(Math.random() * responseGroupArray.length)]
+  let groupResponses = responses[group]
+  return groupResponses[Math.floor(Math.random() * groupResponses.length)]
 }
 
-exports.run = msg => {
-  let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
-  let run = net.run(filtered) || 1
-  run = run.replace(/[^0-9]/g, "").substr(-1) //remove everything except numbers and get first
-  return getResponse(parseInt(run))
+exports.run = async (token, msg) => {
+  return new Promise(async (resolve, reject) => {
+    let reqId = await db.saveMessage(token, msg)
+
+    let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
+    let run = net.run(filtered) || "ERROR"
+
+    db.saveResponse(reqId, run) //update response field in db
+    resolve(getResponse(run))
+  })
 }
