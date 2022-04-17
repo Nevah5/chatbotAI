@@ -50,6 +50,7 @@ exports.train = _ =>{
 
 const responses = require('../data/responses.json')
 const getResponse = group => {
+  if(group === -1) return "I dont know how to respond."
   let groupResponses = responses[group]
   return groupResponses[Math.floor(Math.random() * groupResponses.length)]
 }
@@ -59,7 +60,7 @@ exports.run = async (token, msg) => {
     let reqId = await db.saveMessage(token, msg)
 
     let filtered = msg.replace(/[^a-zA-Z.!? ]+/g, "").toLowerCase()
-    let run = net.run(filtered) || "ERROR"
+    let run = net.run(filtered) || -1
 
     db.saveResponse(reqId, run) //update response field in db
     resolve(getResponse(run))
