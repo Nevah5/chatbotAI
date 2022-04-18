@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./style.css";
 import sendImage from "./images/send.png";
-const url = "https://api.geeler.net";
+const url = "https://api.nevah5.com";
 
 class App extends Component {
   state = {
@@ -107,7 +107,6 @@ class App extends Component {
     await fetch(`${url}/train`, {
       method: "POST",
       headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3001",
         question: this.state.lastQuestion,
         answer: message,
       },
