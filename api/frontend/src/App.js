@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './style.css';
-import svg from './images/logo.svg'
+import sendImage from './images/send.png'
 
 class App extends Component {
   state = {  }
@@ -14,7 +14,26 @@ class App extends Component {
           </div>
           <h3>Nevah#0001</h3>
         </div>
-        <img className='float' src={svg} alt="floating logo" />
+        <div className='float' />
+        <div className='chatfield'>
+          <div className='chat'>
+            <div className='message'>
+              <div className='img' id='u' />
+              <h5>User</h5>
+              <p>What are you?</p>
+            </div>
+            <div className='message'>
+              <div className='img' />
+              <h5>Chatbot <i>(you)</i></h5>
+              <p>I dont know.</p>
+            </div>
+          </div>
+          <form className='input'>
+            <input type="text" placeholder='Type a response here...' />
+            <input type="submit" id="submit" value="." />
+            <label for="submit"><img src={sendImage} alt="send" /></label>
+          </form>
+        </div>
       </React.Fragment>
     );
   }
