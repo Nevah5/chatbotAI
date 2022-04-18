@@ -51,15 +51,6 @@ app.post('/response', async (req, res) => {
     res.status(response.code).json({code: response.code, message: response.message})
   })
 })
-app.post('/train', async (req, res) => {
-  const {token} = req.headers
-  await checkTokenPromise(token).then(response => {
-    res.status(response.code).json({code: response.code, message: response.message})
-  }).catch(response =>{
-    res.status(response.code).json({code: response.code, message: response.message})
-  })
-  logEndpointRequest('post', 'train', req)
-})
 app.get('/changelog/:id', (req, res) => {
   let version = req.params.id
   if(!fs.existsSync(`./changelogs/${version}.txt`)) return res.status(404).json({code: 404, message: "Not Found!"})

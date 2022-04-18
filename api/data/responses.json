@@ -1,9 +1,0 @@
-{
-  "1": ["Hello!", "What's up?", "Hey there!", "Hello %name%!", "Hey, how are you?", "Howdy!", "Hi!"],
-  "2": ["Good morning!", "Good morning, %name%!"],
-  "3": ["Bye!", "Have a nice day!", "See you!", "Good bye!", "Bye bye!"],
-  "4": ["Good night!", "Sleep well, %name%!", "Sleep well!", "See you tomorrow!"],
-  "5": ["I'm fine.", "I'm feeling awesome!", "I'm a bot, I dont have any feelings, right?"],
-  "6": ["I'm Pepper.", "Well, I dont know.", "Try to guess it.", "I will not tell you."],
-  "7": ["You are %name%, aren't you?", "Heya %name%!"]
-}
