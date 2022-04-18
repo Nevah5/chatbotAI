@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import './style.css';
 import sendImage from './images/send.png'
-import axios from 'axios'
 
 class App extends Component {
   messages = []
@@ -46,8 +45,8 @@ class App extends Component {
   }
 
   apiRequest = async _ => {
-    let fetch = await axios.get('https://api.geeler.net/question')
-    let data = await fetch.data
+    let response = await fetch('https://api.geeler.net/question')
+    let data = await response.json()
 
     this.messages.push({user: "user", message: data.question})
 
