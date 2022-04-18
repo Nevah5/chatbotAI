@@ -3,7 +3,6 @@ import "./style.css";
 import sendImage from "./images/send.png";
 
 class App extends Component {
-  delay = true;
   state = { messages: [], toastState: "none", delay: true, loading: true };
 
   render() {
