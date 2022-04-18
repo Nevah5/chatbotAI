@@ -1,9 +1,15 @@
 var express = require('express')
 var app = express()
 const fs = require('fs')
+const questions = require('./data/questiondata.json')
 let port = 3001
 let data = []
 
+app.get('/question', (req, res) => {
+  let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
+
+  res.status(200).json({code: 200, message: "Ok!", question: randomQuestion})
+})
 
 app.post('/train', (req, res) => {
   let question = req.headers.question
