@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./style.css";
 import sendImage from "./images/send.png";
+const url = "http://127.0.0.1:3001";
 
 class App extends Component {
   state = {
@@ -70,7 +71,7 @@ class App extends Component {
 
   apiRequest = async (_) => {
     this.setState({ loading: true });
-    let response = await fetch("https://api.geeler.net/question");
+    let response = await fetch(`${url}/question`);
     let data = await response.json();
 
     this.setState({
@@ -103,9 +104,11 @@ class App extends Component {
     });
 
     //send answer back to api
-    await fetch("https://api.geeler.net/train", {
+    console.log(this.state.lastQuestion);
+    await fetch(`${url}/train`, {
       method: "POST",
       headers: {
+        "Access-Control-Allow-Origin": "http://localhost:3001",
         question: this.state.lastQuestion,
         answer: message,
       },

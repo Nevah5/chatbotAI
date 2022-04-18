@@ -5,6 +5,9 @@ const questions = require('./data/questiondata.json')
 let port = 3001
 let data = []
 
+const cors = require("cors")
+app.use(cors())
+
 app.get('/question', (req, res) => {
   let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
 
@@ -19,7 +22,6 @@ app.post('/train', (req, res) => {
   console.log(req.headers);
   data.push({q: question, a: answer})
 
-  res.header("Access-Control-Allow-Origin", "*");
   res.status(200).json({code: 200, message: "Ok!"})
 })
 
