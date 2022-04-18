@@ -1,22 +1,23 @@
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, { Component } from 'react';
+import './style.css';
+import svg from './images/logo.svg'
+
+class App extends Component {
+  state = {  }
+  render() {
+    return (
+      <React.Fragment>
+        <div className='header'>
+          <div>
+            <h1>Nevah5</h1>
+            <h4>API</h4>
+          </div>
+          <h3>Nevah#0001</h3>
+        </div>
+        <img className='float' src={svg} alt="floating logo" />
+      </React.Fragment>
+    );
+  }
 }
 
 export default App;

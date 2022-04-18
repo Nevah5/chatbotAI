@@ -1,0 +1,64 @@
+@font-face {
+  font-family: komikax;
+  src: url('./fonts/komikax.ttf');
+}
+$dark: #101A24;
+
+html, body{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background-image: url('./images/pattern.png');
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $dark;
+  padding: 20px;
+
+  @mixin headerFonts {
+    font-family: komikax, monospace;
+    margin: 0;
+    color: white;
+  }
+  div{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+    h1{
+      @include headerFonts();
+    }
+    h4{
+      @include headerFonts();
+    }
+  }
+  h3{
+    @include headerFonts();
+  }
+}
+
+
+@keyframes float {
+  from{
+    margin-top: 0px;
+  }
+  to{
+    margin-top: 50px;
+  }
+}
+img.float{
+  animation: float 3s infinite ease-in-out alternate;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 30%;
+  height: auto;
+}

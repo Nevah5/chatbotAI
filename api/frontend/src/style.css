@@ -1,0 +1,93 @@
+@font-face {
+  font-family: komikax;
+  src: url("./fonts/komikax.ttf");
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-image: url("./images/pattern.png");
+}
+
+.header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #101A24;
+  padding: 20px;
+}
+
+.header div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.header div h1 {
+  font-family: komikax, monospace;
+  margin: 0;
+  color: white;
+}
+
+.header div h4 {
+  font-family: komikax, monospace;
+  margin: 0;
+  color: white;
+}
+
+.header h3 {
+  font-family: komikax, monospace;
+  margin: 0;
+  color: white;
+}
+
+@-webkit-keyframes float {
+  from {
+    margin-top: 0px;
+  }
+  to {
+    margin-top: 50px;
+  }
+}
+
+@keyframes float {
+  from {
+    margin-top: 0px;
+  }
+  to {
+    margin-top: 50px;
+  }
+}
+
+img.float {
+  -webkit-animation: float 3s infinite ease-in-out alternate;
+          animation: float 3s infinite ease-in-out alternate;
+  position: absolute;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 30%;
+  height: auto;
+}
+/*# sourceMappingURL=style.css.map */
