@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./style.css";
 import sendImage from "./images/send.png";
-const url = "http://127.0.0.1:3001";
+const url = "https://api.geeler.net";
 
 class App extends Component {
   state = {
@@ -104,7 +104,6 @@ class App extends Component {
     });
 
     //send answer back to api
-    console.log(this.state.lastQuestion);
     await fetch(`${url}/train`, {
       method: "POST",
       headers: {
