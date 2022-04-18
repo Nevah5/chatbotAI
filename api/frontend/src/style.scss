@@ -3,6 +3,7 @@
   src: url('./fonts/komikax.ttf');
 }
 $dark: #101A24;
+$error-dark: #903131;
 $error: #e84e4e;
 
 html, body{
@@ -171,4 +172,28 @@ div.chatfield{
       }
     }
   }
+}
+
+@keyframes toastFade {
+  0%{
+    opacity: 1;
+  }
+  80%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+div.toast{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: $error;
+  border: $error-dark solid 2px;
+  color: white;
+  border-radius: .5em;
+  padding: 15px 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  animation: toastFade 4s forwards;
 }

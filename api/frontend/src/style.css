@@ -242,4 +242,42 @@ div.chatfield form.input label img {
   aspect-ratio: 1/1;
   height: 70%;
 }
+
+@-webkit-keyframes toastFade {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes toastFade {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+div.toast {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #e84e4e;
+  border: #903131 solid 2px;
+  color: white;
+  border-radius: .5em;
+  padding: 15px 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-animation: toastFade 4s forwards;
+          animation: toastFade 4s forwards;
+}
 /*# sourceMappingURL=style.css.map */
