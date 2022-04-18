@@ -3,7 +3,13 @@ import "./style.css";
 import sendImage from "./images/send.png";
 
 class App extends Component {
-  state = { messages: [], toastState: "none", delay: true, loading: true };
+  state = {
+    messages: [],
+    toastState: "none",
+    delay: true,
+    loading: true,
+    lastQuestion: "",
+  };
 
   render() {
     return (
@@ -74,10 +80,13 @@ class App extends Component {
       ],
     });
 
-    this.setState({ delay: false });
-    this.setState({ loading: false });
+    this.setState({
+      delay: false,
+      loading: false,
+      lastQuestion: data.question,
+    });
   };
-  sendMessage = (event) => {
+  sendMessage = async (event) => {
     let message = document.querySelector('form.input input[type="text"]').value;
     event.preventDefault();
     if (this.message === null) return;
@@ -93,11 +102,19 @@ class App extends Component {
       messages: [...this.state.messages, { user: "you", message }],
     });
 
+    //send answer back to api
+    await fetch("https://api.geeler.net/train", {
+      method: "POST",
+      headers: {
+        question: this.state.lastQuestion,
+        answer: message,
+      },
+    });
+
     //add delay to input
     this.setState({ delay: true });
 
     this.apiRequest();
-
     //clear
     document.querySelector('form.input input[type="text"]').value = "";
   };

@@ -16,6 +16,7 @@ app.post('/train', (req, res) => {
   let question = req.headers.question
   let answer = req.headers.answer
 
+  console.log(req.headers);
   data.push({q: question, a: answer})
 
   res.header("Access-Control-Allow-Origin", "*");
