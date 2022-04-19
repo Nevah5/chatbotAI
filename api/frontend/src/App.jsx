@@ -71,7 +71,7 @@ class App extends Component {
 
   apiRequest = async (_) => {
     this.setState({ loading: true });
-    let response = await fetch(`${url}/question`);
+    let response = await fetch(`${url}/train/question`);
     let data = await response.json();
 
     this.setState({

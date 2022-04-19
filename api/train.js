@@ -8,7 +8,7 @@ let data = []
 const cors = require("cors")
 app.use(cors())
 
-app.get('/question', (req, res) => {
+app.get('/train/question', (req, res) => {
   let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
 
   res.header("Access-Control-Allow-Origin", "*");
@@ -19,13 +19,12 @@ app.post('/train', (req, res) => {
   let question = req.headers.question
   let answer = req.headers.answer
 
-  console.log(req.headers);
   data.push({q: question, a: answer})
 
   res.status(200).json({code: 200, message: "Ok!"})
 })
 
-app.get('/save', (req, res) => {
+app.get('/train/save', (req, res) => {
   fs.writeFileSync('data/answerdata.json', JSON.stringify(data))
 
   res.header("Access-Control-Allow-Origin", "*");
