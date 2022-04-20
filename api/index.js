@@ -46,7 +46,6 @@ app.post('/response', async (req, res) => {
       logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"}`)
     })
   }).catch(response => { //Token invalid
-    console.log(response);
     logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
     res.status(response.code).json({code: response.code, message: response.message})
   })

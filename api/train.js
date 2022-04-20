@@ -11,7 +11,7 @@ app.use(cors())
 app.get('/train/question', (req, res) => {
   let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
 
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!", question: randomQuestion})
 })
 
@@ -27,7 +27,7 @@ app.post('/train', (req, res) => {
 app.get('/train/save', (req, res) => {
   fs.writeFileSync('data/answerdata.json', JSON.stringify(data))
 
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 201, message: "Created!"})
 })
 
