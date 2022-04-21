@@ -3,7 +3,6 @@ var app = express()
 const fs = require('fs')
 const questions = require('./data/questiondata.json')
 let port = 3001
-let data = []
 
 const cors = require("cors")
 app.use(cors())

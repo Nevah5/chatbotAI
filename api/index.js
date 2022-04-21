@@ -5,13 +5,14 @@ const fs = require('fs')
 require('dotenv').config()
 const {API_PORT, API_VERSION} = process.env
 const ai = require('./src/ai')
+const questions = require('./data/questiondata.json')
+let data = []
 
 //Start ai
-ai.start().then(_=> {
+ai.start().then(_ => {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
-}).catch(e => {
-  logger.error(e.message)
 })
+
 
 const db = require('./src/db')
 const logger = require('./src/logger')
@@ -56,6 +57,28 @@ app.get('/changelog/:id', (req, res) => {
   const data = fs.readFileSync(`./changelogs/${version}.txt`).toString()
   res.json({code: 200, message: "Ok!", changelog: data})
   logEndpointRequest('get', 'changelog', req)
+})
+app.get('/train/question', (req, res) => {
+  let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
+
+  res.header("Access-Control-Allow-Origin", "*")
+  res.status(200).json({code: 200, message: "Ok!", question: randomQuestion})
+})
+app.post('/train', (req, res) => {
+  let question = req.headers.question
+  let answer = req.headers.answer
+  let data = {q: question, a: answer}
+
+  data.push(data)
+  logger.info(`POST /train - ${data}`)
+
+  res.status(200).json({code: 200, message: "Ok!"})
+})
+app.get('/train/save', (req, res) => {
+  fs.writeFileSync('data/answerdata.json', JSON.stringify(data))
+
+  res.header("Access-Control-Allow-Origin", "*")
+  res.status(200).json({code: 201, message: "Created!"})
 })
 
 //Log templates
