@@ -72,6 +72,7 @@ app.post('/train', (req, res) => {
   data.push(data)
   logger.info(`POST /train - ${data}`)
 
+  res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!"})
 })
 app.get('/train/save', (req, res) => {
