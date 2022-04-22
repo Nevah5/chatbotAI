@@ -1,5 +1,5 @@
 const fs = require('fs')
-const logger = require('./logger')
+const logger = require('../utils/logger')
 const brain = require('brain.js')
 const net = new brain.recurrent.LSTM()
 

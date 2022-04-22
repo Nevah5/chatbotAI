@@ -4,7 +4,7 @@ const generateApiKey = require('generate-api-key')
 const fs = require('fs')
 require('dotenv').config()
 const {API_PORT, API_VERSION} = process.env
-const ai = require('./src/ai')
+const ai = require('./modules/ai')
 const questions = require('./data/questiondata.json')
 let data = []
 
@@ -13,9 +13,8 @@ ai.start().then(_ => {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
 })
 
-
-const db = require('./src/db')
-const logger = require('./src/logger')
+const db = require('./modules/db')
+const logger = require('./utils/logger')
 
 //Endpoints
 app.get('/ping', (req, res) => {
@@ -67,10 +66,9 @@ app.get('/train/question', (req, res) => {
 app.post('/train', (req, res) => {
   let question = req.headers.question
   let answer = req.headers.answer
-  let data = {q: question, a: answer}
 
-  data.push(data)
-  logger.info(`POST /train - ${data}`)
+  data.push({q: question, a: answer})
+  logger.info(`POST /train - {q: ${question}, a: ${answer}}`)
 
   res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!"})
