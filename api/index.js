@@ -4,6 +4,7 @@ const generateApiKey = require('generate-api-key')
 const fs = require('fs')
 require('dotenv').config()
 const {API_PORT, API_VERSION} = process.env
+const ai = require('./modules/ai')
 const questions = require('./data/questiondata.json')
 let data = []
 if(fs.existsSync('./data/answerdata.json')){
@@ -92,4 +93,6 @@ checkTokenPromise = async (token) => {
   })
 }
 
-app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
+ai.start().then(_=> {
+  app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
+})
