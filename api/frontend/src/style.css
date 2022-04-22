@@ -280,4 +280,9 @@ div.toast {
   -webkit-animation: toastFade 4s forwards;
           animation: toastFade 4s forwards;
 }
+
+div.toast#network {
+  -webkit-animation: none;
+          animation: none;
+}
 /*# sourceMappingURL=style.css.map */

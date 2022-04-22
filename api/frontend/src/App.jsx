@@ -7,6 +7,7 @@ class App extends Component {
   state = {
     messages: [],
     toastState: "none",
+    toastStateNetworkError: "none",
     delay: true,
     loading: true,
     lastQuestion: "",
@@ -61,6 +62,13 @@ class App extends Component {
         <div className="toast" style={{ display: this.state.toastState }}>
           <span>You are sending messages to fast!</span>
         </div>
+        <div
+          className="toast"
+          id="network"
+          style={{ display: this.state.toastStateNetworkError }}
+        >
+          <span>No internet or API is offline.</span>
+        </div>
       </React.Fragment>
     );
   }
@@ -71,7 +79,9 @@ class App extends Component {
 
   apiRequest = async (_) => {
     this.setState({ loading: true });
-    let response = await fetch(`${url}/train/question`);
+    let response = await fetch(`${url}/train/question`).catch((_) => {
+      this.setState({ toastStateNetworkError: "initial" });
+    });
     let data = await response.json();
 
     this.setState({
@@ -88,8 +98,12 @@ class App extends Component {
     });
   };
   sendMessage = async (event) => {
-    let message = document.querySelector('form.input input[type="text"]').value;
     event.preventDefault();
+
+    //cancel if api not reachable
+    if (this.state.toastStateNetworkError === "initial") return;
+
+    let message = document.querySelector('form.input input[type="text"]').value;
     if (this.message === null) return;
     if (this.state.delay) {
       this.setState({ toastState: "initial" });

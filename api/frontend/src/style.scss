@@ -196,4 +196,8 @@ div.toast{
   padding: 15px 30px;
   font-family: Arial, Helvetica, sans-serif;
   animation: toastFade 4s forwards;
+
+  &#network{
+    animation: none;
+  }
 }
