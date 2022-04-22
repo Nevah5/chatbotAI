@@ -4,14 +4,13 @@ const generateApiKey = require('generate-api-key')
 const fs = require('fs')
 require('dotenv').config()
 const {API_PORT, API_VERSION} = process.env
-const ai = require('./modules/ai')
 const questions = require('./data/questiondata.json')
 let data = []
+if(fs.existsSync('./data/answerdata.json')){
+  let read = fs.readFileSync('./data/answerdata.json')
+  data = read;
+}
 
-//Start ai
-ai.start().then(_ => {
-  app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
-})
 
 const db = require('./modules/db')
 const logger = require('./utils/logger')
@@ -63,15 +62,15 @@ app.get('/train/question', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!", question: randomQuestion})
 })
-app.post('/train', (req, res) => {
+app.post('/train', async (req, res) => {
   let question = req.headers.question
   let answer = req.headers.answer
 
   data.push({q: question, a: answer})
-  logger.info(`POST /train - {q: ${question}, a: ${answer}}`)
-
   res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!"})
+
+  logger.info(`POST /train - {q: ${question}, a: ${answer}}`)
 })
 app.get('/train/save', (req, res) => {
   fs.writeFileSync('data/answerdata.json', JSON.stringify(data))
@@ -92,3 +91,5 @@ checkTokenPromise = async (token) => {
     resolve({code: 200, message: "Ok!"})
   })
 }
+
+app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
