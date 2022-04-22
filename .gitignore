@@ -2,3 +2,4 @@
 .env
 **/logs
 api/data/data.json
+api/data/answerdata.json
