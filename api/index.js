@@ -30,11 +30,15 @@ app.post('/verify', async (req, res) => {
   })
   logEndpointRequest('post', 'verify', req)
 })
-app.get('/signup', async (req, res) => {
+app.post('/signup', async (req, res) => {
   let token = generateApiKey()
-  await db.addAPIToken(token).then(_ => {
-    logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
-    res.status(201).json({code: 201, message: "Created!", token: token})
+  await checkTokenPromise(req.headers.token).then(async _ => {
+    await db.addAPIToken(token).then(_ => {
+      logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
+      res.status(201).json({code: 201, message: "Created!", token: token})
+    })
+  }).catch(response => {
+    res.status(response.code).json(response)
   })
   logEndpointRequest('post', 'signup', req)
 })
