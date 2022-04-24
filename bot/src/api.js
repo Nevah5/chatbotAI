@@ -97,16 +97,13 @@ onApiVersionChange = async (client, newApiVersion) => {
 
 //update bot's profile
 changeStatus = async (user, client) => {
-  const production = process.env.PRODUCTION === 'true'
   let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
   let data = {
-    pfp: ApiIsOnline ? '../src/logo.png' : '../src/logo-api_noresponse.png',
     status: ApiIsOnline ? 'online' : 'dnd',
     activity: ApiIsOnline ? null : cache.getCache('api-noresponse_status'),
     apiStatusEmbed: ApiIsOnline ? 'online' : 'offline'
   }
 
-  if(production) user.setAvatar(data.pfp) //update pfp when on production
   user.setStatus(data.status)
   user.setActivity(data.activity)
   //send information message to dev via dm
