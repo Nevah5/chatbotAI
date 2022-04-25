@@ -21,6 +21,7 @@ body{
   align-items: center;
   background-color: $dark;
   padding: 20px;
+  z-index: 10;
 
   @mixin headerFonts {
     font-family: komikax, monospace;
@@ -74,6 +75,7 @@ div.chatfield{
   bottom: 20px;
   width: 80%;
   border-radius: .5em;
+  z-index: -1;
 
   .chat{
     .message{

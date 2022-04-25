@@ -24,6 +24,7 @@ body {
           align-items: center;
   background-color: #101A24;
   padding: 20px;
+  z-index: 10;
 }
 
 .header div {
@@ -101,6 +102,7 @@ div.chatfield {
   bottom: 20px;
   width: 80%;
   border-radius: .5em;
+  z-index: -1;
 }
 
 div.chatfield .chat .message {
