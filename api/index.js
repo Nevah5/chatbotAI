@@ -17,8 +17,9 @@ if(fs.existsSync('./data/answerdata.json')){
 const db = require('./modules/db')
 const logger = require('./utils/logger')
 const {authenticate} = require('./utils/authenticate')
+const {log} = require('./utils/logEndpoint')
 
-app.use(logEndpoint)
+app.use(log)
 
 app.use((err, req, res, next) => {
   logger.error(err.stack)
@@ -70,11 +71,6 @@ app.get('/train/save', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 201, message: "Created!"})
 })
-
-function logEndpoint(req, res, next) {
-  logger.info(`${req.method.toUpperCase()} ${req.path} - ${req.headers["x-forwarded-for"] || "localhost"}`)
-  next()
-}
 
 ai.start().then(_=> {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
