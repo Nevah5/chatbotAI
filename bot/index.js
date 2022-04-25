@@ -16,7 +16,7 @@ const message = require('./src/message')
 const db = require('./src/db')
 const api = require('./src/api')
 const logger = require('./src/logger')
-const {HUB_SERVER, API_TOKEN, DISCORD_BOT_TOKEN} = process.env
+const {API_TOKEN, DISCORD_BOT_TOKEN} = process.env
 
 //check the token
 api.checkToken(API_TOKEN)
