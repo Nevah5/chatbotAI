@@ -6,7 +6,6 @@ const ai = require('./utils/ai')
 
 const db = require('./utils/db')
 const logger = require('./utils/logger')
-const postHandler = require('./utils/post-handler')
 const restricted = ["/verify", "/train", "/response", "/train/save", "/signup"]
 
 app.use((err, req, res, next) => { //print errors if happen
@@ -20,15 +19,15 @@ app.use(async (req, res, next) => { //verify token
   res.status(401).json({code: 401, message: "Invalid Token"})
 })
 
-app.get('/ping', require('./controllers/ping'))
+//special endpoints
 app.get('/changelog/:id', require('./controllers/changelog'))
 
 app.use((req, res, next) => {
   if(req.method.toUpperCase() !== "POST") return next()
-  postHandler(req, res)
-}) //handle post requests
+  require('./utils/post-handler')(req, res)
+}) //handle POST requests
 
-app.use((req, res, next) => res.status(404).json({code: 404, message: "Not Found!"})) //throw 404
+app.use(require('./utils/get-handler')) //handle GET requests
 
 ai.start().then(_=> {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
