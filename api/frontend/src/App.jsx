@@ -121,6 +121,7 @@ class App extends Component {
     await fetch(`${url}/train`, {
       method: "POST",
       headers: {
+        token: "mix0~5o+iJYJqI-cc",
         question: this.state.lastQuestion,
         answer: message,
       },

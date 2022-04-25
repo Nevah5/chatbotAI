@@ -25,4 +25,5 @@ CREATE TABLE trainingdata(
   created TIMESTAMP(1) NOT NULL DEFAULT CURRENT_TIMESTAMP(1)
 );
 
-INSERT INTO apiTokens (token) VALUES ('oz1DRx0rDFlNHKsg3u');
+INSERT INTO apiTokens (token) VALUES ('oz1DRx0rDFlNHKsg3u'); -- BOT TOKEN
+INSERT INTO apiTokens (token) VALUES ('mix0~5o+iJYJqI-cc'); -- FRONTEND TOKEN
