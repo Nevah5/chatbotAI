@@ -3,6 +3,7 @@ var app = express()
 require('dotenv').config()
 const {API_PORT} = process.env
 const ai = require('./utils/ai')
+const cors = require('cors')
 
 const db = require('./utils/db')
 const logger = require('./utils/logger')
@@ -12,6 +13,7 @@ app.use((err, req, res, next) => { //print errors if happen
   logger.error(err.stack)
   res.status(500).json({code: 500, message: "Internal Server Error"})
 })
+app.use(cors()) //for preflights and so on
 app.use(require('./utils/logEndpoint').log) //log request
 app.use(async (req, res, next) => { //verify token
   if(!restricted.includes(req.path.split('?')[0])) return next()
