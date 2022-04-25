@@ -2,9 +2,9 @@ var express = require('express')
 var app = express()
 require('dotenv').config()
 const {API_PORT} = process.env
-const ai = require('./modules/ai')
+const ai = require('./utils/ai')
 
-const db = require('./modules/db')
+const db = require('./utils/db')
 const logger = require('./utils/logger')
 const postHandler = require('./utils/post-handler')
 const restricted = ["/verify", "/train", "/response", "/train/save", "/signup"]

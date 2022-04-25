@@ -1,5 +1,5 @@
 const generateApiKey = require('generate-api-key')
-const db = require('../modules/db')
+const db = require('../utils/db')
 const logger = require('../utils/logger')
 
 const signup = async (req, res) => {

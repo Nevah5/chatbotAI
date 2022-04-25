@@ -1,4 +1,4 @@
-const ai = require('../modules/ai')
+const ai = require('../utils/ai')
 
 const response = (req, res) => {
   ai.run(req.headers.token, req.headers.message).then(msg => { //get response from ai

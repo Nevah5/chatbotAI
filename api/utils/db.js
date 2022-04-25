@@ -38,6 +38,6 @@ exports.saveResponse = (id, msg) => {
   con.query(`UPDATE requests SET response='${msg}' WHERE ID=${id}`)
 }
 
-exports.addTrainingData = (q, a) => {
-  con.query(`INSERT INTO trainingdata (question, answer, ip) VALUES ('${q}', '${a}')`)
+exports.addTrainingData = (q, a, ip) => {
+  con.query(`INSERT INTO trainingdata (question, answer, ip) VALUES ('${q}', '${a}', '${ip}')`)
 }
