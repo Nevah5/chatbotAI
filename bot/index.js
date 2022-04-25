@@ -26,7 +26,7 @@ client.on('ready', async () => {
   logger.info(`Logged in as ${client.user.tag}!`)
 
   api.checkApi(client.user, client)
-  commands.build(client.guilds.cache.get(HUB_SERVER).commands)
+  commands.build(client.application.commands)
 })
 
 client.on('messageCreate', async msg => {
