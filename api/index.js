@@ -17,9 +17,8 @@ if(fs.existsSync('./data/answerdata.json')){
 const db = require('./modules/db')
 const logger = require('./utils/logger')
 const {authenticate} = require('./utils/authenticate')
-const {log} = require('./utils/logEndpoint')
 
-app.use(log)
+app.use(require('./utils/logEndpoint').log)
 
 app.use((err, req, res, next) => {
   logger.error(err.stack)
