@@ -21,37 +21,22 @@ app.get('/ping', (req, res) => {
   res.json({code: 200, message: "Pong!", version: API_VERSION})
   logEndpointRequest('get', 'ping', req)
 })
-app.post('/verify', async (req, res) => {
-  const {token} = req.headers
-  await checkTokenPromise(token).then(response => {
-    res.status(response.code).json({code: response.code, message: response.message})
-  }).catch(response => {
-    res.status(response.code).json({code: response.code, message: response.message})
-  })
+app.post('/verify', authenticate, async (req, res) => {
+  res.status(200).json({code: 200, message: "Ok!"})
   logEndpointRequest('post', 'verify', req)
 })
-app.post('/signup', async (req, res) => {
+app.post('/signup', authenticate, async (req, res) => {
   let token = generateApiKey()
-  await checkTokenPromise(req.headers.token).then(async _ => {
-    await db.addAPIToken(token).then(_ => {
-      logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
-      res.status(201).json({code: 201, message: "Created!", token: token})
-    })
-  }).catch(response => {
-    res.status(response.code).json(response)
+  await db.addAPIToken(token).then(_ => {
+    logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
+    res.status(201).json({code: 201, message: "Created!", token: token})
   })
   logEndpointRequest('post', 'signup', req)
 })
-app.post('/response', async (req, res) => {
+app.post('/response', authenticate, (req, res) => {
   let token = req.headers.token
-  await checkTokenPromise(token).then(async _ => {
-    ai.run(token, req.headers.message).then(msg => { //get response from ai
-      res.status(200).json({code: 200, message: "Ok!", response: msg})
-      logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"}`)
-    })
-  }).catch(response => { //Token invalid
-    logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
-    res.status(response.code).json({code: response.code, message: response.message})
+  ai.run(token, req.headers.message).then(msg => { //get response from ai
+    res.status(200).json({code: 200, message: "Ok!", response: msg})
   })
 })
 app.get('/changelog/:id', (req, res) => {
@@ -89,13 +74,17 @@ logEndpointRequest = (method, endpoint, req) => {
   logger.info(`${method.toUpperCase()} /${endpoint} from ${req.headers['x-forwarded-for'] || "localhost"}`)
 }
 
-//Promises
-checkTokenPromise = async (token) => {
-  return new Promise(async (resolve, reject) => {
-    if(!await db.checkAPIToken(token)) return reject({code: 401, message: "Invalid Token."})
-    resolve({code: 200, message: "Ok!"})
-  })
+async function authenticate(req, res, next) {
+  let token = req.headers.token
+  if(await db.checkAPIToken(token)) return next()
+  res.status(401).json({code: 401, message: "Invalid Token"})
 }
+
+const middleware = (req, res, next) => {
+  logger.info("log")
+  next()
+}
+app.use(middleware)
 
 ai.start().then(_=> {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
