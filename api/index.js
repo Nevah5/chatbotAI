@@ -16,6 +16,7 @@ if(fs.existsSync('./data/answerdata.json')){
 
 const db = require('./modules/db')
 const logger = require('./utils/logger')
+const {authenticate} = require('./utils/authenticate')
 
 app.use(logEndpoint)
 
@@ -73,12 +74,6 @@ app.get('/train/save', (req, res) => {
 function logEndpoint(req, res, next) {
   logger.info(`${req.method.toUpperCase()} ${req.path} - ${req.headers["x-forwarded-for"] || "localhost"}`)
   next()
-}
-
-async function authenticate(req, res, next) {
-  let token = req.headers.token
-  if(await db.checkAPIToken(token)) return next() //when token is true
-  res.status(401).json({code: 401, message: "Invalid Token"})
 }
 
 ai.start().then(_=> {
