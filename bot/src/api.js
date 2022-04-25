@@ -97,7 +97,6 @@ onApiVersionChange = async (client, newApiVersion) => {
 
 //update bot's profile
 changeStatus = async (user, client) => {
-  let channel = client.guilds.cache.get(process.env.HUB_SERVER).channels.cache.get(process.env.API_CHANNEL)
   let data = {
     status: ApiIsOnline ? 'online' : 'dnd',
     activity: ApiIsOnline ? null : cache.getCache('api-noresponse_status'),
