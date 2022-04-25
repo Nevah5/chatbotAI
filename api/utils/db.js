@@ -38,7 +38,10 @@ exports.saveResponse = (id, msg) => {
   con.query(`UPDATE requests SET response='${msg}' WHERE ID=${id}`)
 }
 
-exports.addTrainingData = (q, a, ip) => {
+exports.addTrainingData = (question, answer, ipAdress) => {
+  let q = question.replace(/[\\$'"]/g, "\\$&")
+  let a = answer.replace(/[\\$'"]/g, "\\$&")
+  let ip = ipAdress.replace(/[\\$'"]/g, "\\$&")
   con.query(`INSERT INTO trainingdata (question, answer, ip) VALUES ('${q}', '${a}', '${ip}')`)
 }
 
