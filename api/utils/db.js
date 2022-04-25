@@ -41,3 +41,11 @@ exports.saveResponse = (id, msg) => {
 exports.addTrainingData = (q, a, ip) => {
   con.query(`INSERT INTO trainingdata (question, answer, ip) VALUES ('${q}', '${a}', '${ip}')`)
 }
+
+exports.getTrainingData = _ => {
+  return new Promise((resolve, reject) => {
+    con.query(`SELECT question, answer FROM trainingdata`, (err, data) => {
+      resolve(data)
+    })
+  })
+}
