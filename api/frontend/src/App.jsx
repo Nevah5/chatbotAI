@@ -120,6 +120,7 @@ class App extends Component {
     //send answer back to api
     await fetch(`${url}/train`, {
       method: "POST",
+      mode: "no-cors",
       headers: {
         token: "mix0~5o+iJYJqI-cc",
         question: this.state.lastQuestion,
