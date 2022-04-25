@@ -10,7 +10,6 @@ const save = async (req, res) => {
     fs.writeFileSync('./data/answerdata.json', JSON.stringify(trainingData))
   })
 
-  res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 201, message: "Created!"})
 }
 
