@@ -6,24 +6,24 @@ require('dotenv').config()
 const {API_PORT, API_VERSION} = process.env
 const ai = require('./modules/ai')
 const questions = require('./data/questiondata.json')
+
+//for manual training
 let data = []
 if(fs.existsSync('./data/answerdata.json')){
   let read = fs.readFileSync('./data/answerdata.json')
   data = read;
 }
 
-
 const db = require('./modules/db')
 const logger = require('./utils/logger')
 
-//Endpoints
+app.use(logEndpoint)
+
 app.get('/ping', (req, res) => {
   res.json({code: 200, message: "Pong!", version: API_VERSION})
-  logEndpointRequest('get', 'ping', req)
 })
 app.post('/verify', authenticate, async (req, res) => {
   res.status(200).json({code: 200, message: "Ok!"})
-  logEndpointRequest('post', 'verify', req)
 })
 app.post('/signup', authenticate, async (req, res) => {
   let token = generateApiKey()
@@ -31,7 +31,6 @@ app.post('/signup', authenticate, async (req, res) => {
     logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
     res.status(201).json({code: 201, message: "Created!", token: token})
   })
-  logEndpointRequest('post', 'signup', req)
 })
 app.post('/response', authenticate, (req, res) => {
   let token = req.headers.token
@@ -44,7 +43,6 @@ app.get('/changelog/:id', (req, res) => {
   if(!fs.existsSync(`./changelogs/${version}.txt`)) return res.status(404).json({code: 404, message: "Not Found!"})
   const data = fs.readFileSync(`./changelogs/${version}.txt`).toString()
   res.json({code: 200, message: "Ok!", changelog: data})
-  logEndpointRequest('get', 'changelog', req)
 })
 app.get('/train/question', (req, res) => {
   let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
@@ -52,15 +50,13 @@ app.get('/train/question', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!", question: randomQuestion})
 })
-app.post('/train', async (req, res) => {
+app.post('/train', authenticate, async (req, res) => {
   let question = req.headers.question
   let answer = req.headers.answer
 
   data.push({q: question, a: answer})
   res.header("Access-Control-Allow-Origin", "*")
   res.status(200).json({code: 200, message: "Ok!"})
-
-  logger.info(`POST /train - {q: ${question}, a: ${answer}}`)
 })
 app.get('/train/save', (req, res) => {
   fs.writeFileSync('data/answerdata.json', JSON.stringify(data))
@@ -69,22 +65,16 @@ app.get('/train/save', (req, res) => {
   res.status(200).json({code: 201, message: "Created!"})
 })
 
-//Log templates
-logEndpointRequest = (method, endpoint, req) => {
-  logger.info(`${method.toUpperCase()} /${endpoint} from ${req.headers['x-forwarded-for'] || "localhost"}`)
+function logEndpoint(req, res, next) {
+  logger.info(`${req.method.toUpperCase()} ${req.path} - ${req.headers["x-forwarded-for"] || "localhost"}`)
+  next()
 }
 
 async function authenticate(req, res, next) {
   let token = req.headers.token
-  if(await db.checkAPIToken(token)) return next()
+  if(await db.checkAPIToken(token)) return next() //when token is true
   res.status(401).json({code: 401, message: "Invalid Token"})
 }
-
-const middleware = (req, res, next) => {
-  logger.info("log")
-  next()
-}
-app.use(middleware)
 
 ai.start().then(_=> {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
