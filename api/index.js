@@ -28,6 +28,8 @@ app.use((req, res, next) => {
   postHandler(req, res)
 }) //handle post requests
 
+app.use((req, res, next) => res.status(404).json({code: 404, message: "Not Found!"})) //throw 404
+
 ai.start().then(_=> {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
 })
