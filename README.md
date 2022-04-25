@@ -80,7 +80,7 @@ This endpoint returns you the changelog from a specific API version.
 
 Example: /changelog/0.0.6
 
-Should return "200 - Ok!" with the changelog field. If the changelog does not exist "404 - Not Found!".
+Should return "200 - Ok!" with the changelog field. If the changelog does not exist "400 - Version Not Found!".
 
 ### POST /train/question
 
