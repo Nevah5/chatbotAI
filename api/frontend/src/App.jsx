@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./style.css";
 import sendImage from "./images/send.png";
-const url = "https://api.nevah5.com";
+const url = "https://chatbotapi.nevah5.com";
 
 class App extends Component {
   state = {
