@@ -19,6 +19,11 @@ const logger = require('./utils/logger')
 
 app.use(logEndpoint)
 
+app.use((err, req, res, next) => {
+  logger.error(err.stack)
+  res.status(500).json({code: 500, message: "Internal Server Error"})
+})
+
 app.get('/ping', (req, res) => {
   res.json({code: 200, message: "Pong!", version: API_VERSION})
 })
