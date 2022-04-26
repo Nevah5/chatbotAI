@@ -1,6 +1,6 @@
 # About
 
-This project is a chatbotAI with an API and a dedicated discord bot that talks with it. The bot sends the message from the user to the API where the AI generates a resonse.
+This project is a chatbotAI with an API and a dedicated discord bot that talks with it. The bot sends the message from the user to the API where the AI generates a response.
 
 # Discord BOT
 
@@ -35,7 +35,7 @@ I have also made one, so that the code is more clean and the chatbot could also 
 
 ## Request Data from the API
 
-The API is hosted on chatbotapi.nevah5.com (**currently offline**).
+The API is hosted on https://chatbotapi.nevah5.com.
 
 There are multiple endpoints from where you can gather data. Those are listed below:
 
