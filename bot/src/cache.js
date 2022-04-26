@@ -10,14 +10,17 @@ let cache = {
 }
 
 exports.initialize = async _ => {
-  cache = {
-    "api-noresponse_message": await db.getConfigValue('api-noresponse_message'),
-    "api-noresponse_status": await db.getConfigValue('api-noresponse_status'),
-    "bot-permission_role": await db.getConfigValue('bot-permission_role'),
-    "api-lastversion": await db.getConfigValue('api-lastversion'),
-    "bot-training_channel": await db.getConfigValue('bot-training_channel'),
-    "chats": await db.getChats()
-  }
+  return new Promise((resolve, reject) => {
+    cache = {
+      "api-noresponse_message": await db.getConfigValue('api-noresponse_message'),
+      "api-noresponse_status": await db.getConfigValue('api-noresponse_status'),
+      "bot-permission_role": await db.getConfigValue('bot-permission_role'),
+      "api-lastversion": await db.getConfigValue('api-lastversion'),
+      "bot-training_channel": await db.getConfigValue('bot-training_channel'),
+      "chats": await db.getChats()
+    }
+    resolve()
+  })
 }
 
 exports.setCache = (id, value) => {
