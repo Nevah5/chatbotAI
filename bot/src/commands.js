@@ -34,11 +34,6 @@ exports.build = (commands) => {
         type: 'SUB_COMMAND_GROUP',
         options: [
           {
-            name: 'training',
-            description: 'Sets the training channel for the bot.',
-            type: 'SUB_COMMAND'
-          },
-          {
             name: 'api-noresponse_message',
             description: 'Set the message for when the API is down.',
             type: 'SUB_COMMAND',
@@ -177,14 +172,6 @@ configResetHandler = async (interaction, client) => {
 
 configSetHandler = async (interaction, client) => {
   switch(interaction.options.getSubcommand()){
-    case "training":
-      let channelId = interaction.channel.id
-      await db.updateConfigValue('bot-training_channel', channelId)
-      cache.setCache('bot-training_channel', channelId)
-
-      interaction.editReply({embeds: [embed.success(`The training channel is\nnow <#${channelId}>!`)]})
-      logger.info(`${getUserMessage(interaction)} ran ${getCommandMessage(interaction)} - new channel now ${getChannelMessage(interaction)}`)
-      break
     case "api-noresponse_message":
       let newMessage = interaction.options.getString("value")
       await db.updateConfigValue('api-noresponse_message', newMessage)
@@ -211,7 +198,6 @@ showConfig = async (interaction) => {
   let api_version = cache.getCache('api-lastversion')
   let api_Noresponse = cache.getCache('api-noresponse_message')
   let api_NoresponseStatus = cache.getCache('api-noresponse_status')
-  let bot_TrainingChannel = cache.getCache('bot-training_channel')
   let botRoleId = cache.getCache('bot-permission_role')
   let chats = cache.getCache('chats')
 
@@ -229,10 +215,6 @@ showConfig = async (interaction) => {
     {
       name: 'API Outage user info message',
       value: api_Noresponse
-    },
-    {
-      name: 'Bot training channel',
-      value: `<#${bot_TrainingChannel}>`
     },
     {
       name: 'Permission Role',

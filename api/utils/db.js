@@ -37,3 +37,18 @@ exports.saveMessage = (token, msg) => {
 exports.saveResponse = (id, msg) => {
   con.query(`UPDATE requests SET response='${msg}' WHERE ID=${id}`)
 }
+
+exports.addTrainingData = (question, answer, ipAdress) => {
+  let q = question.replace(/[\\$'"]/g, "\\$&")
+  let a = answer.replace(/[\\$'"]/g, "\\$&")
+  let ip = ipAdress.replace(/[\\$'"]/g, "\\$&")
+  con.query(`INSERT INTO trainingdata (question, answer, ip) VALUES ('${q}', '${a}', '${ip}')`)
+}
+
+exports.getTrainingData = _ => {
+  return new Promise((resolve, reject) => {
+    con.query(`SELECT question, answer FROM trainingdata`, (err, data) => {
+      resolve(data)
+    })
+  })
+}

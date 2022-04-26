@@ -1,97 +1,35 @@
 var express = require('express')
 var app = express()
-const generateApiKey = require('generate-api-key')
-const fs = require('fs')
 require('dotenv').config()
-const {API_PORT, API_VERSION} = process.env
-const ai = require('./modules/ai')
-const questions = require('./data/questiondata.json')
-let data = []
-if(fs.existsSync('./data/answerdata.json')){
-  let read = fs.readFileSync('./data/answerdata.json')
-  data = read;
-}
+const {API_PORT} = process.env
+const ai = require('./utils/ai')
+const cors = require('cors')
 
-
-const db = require('./modules/db')
+const db = require('./utils/db')
 const logger = require('./utils/logger')
+const restricted = ["/verify", "/train", "/response", "/train/save", "/signup"]
 
-//Endpoints
-app.get('/ping', (req, res) => {
-  res.json({code: 200, message: "Pong!", version: API_VERSION})
-  logEndpointRequest('get', 'ping', req)
+app.use((err, req, res, next) => { //print errors if happen
+  logger.error(err.stack)
+  res.status(500).json({code: 500, message: "Internal Server Error"})
 })
-app.post('/verify', async (req, res) => {
-  const {token} = req.headers
-  await checkTokenPromise(token).then(response => {
-    res.status(response.code).json({code: response.code, message: response.message})
-  }).catch(response => {
-    res.status(response.code).json({code: response.code, message: response.message})
-  })
-  logEndpointRequest('post', 'verify', req)
-})
-app.get('/signup', async (req, res) => {
-  let token = generateApiKey()
-  await db.addAPIToken(token).then(_ => {
-    logger.info(`Database - ${req.headers['x-forwarded-for'] || "localhost"} created token ${token}`)
-    res.status(201).json({code: 201, message: "Created!", token: token})
-  })
-  logEndpointRequest('post', 'signup', req)
-})
-app.post('/response', async (req, res) => {
-  let token = req.headers.token
-  await checkTokenPromise(token).then(async _ => {
-    ai.run(token, req.headers.message).then(msg => { //get response from ai
-      res.status(200).json({code: 200, message: "Ok!", response: msg})
-      logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"}`)
-    })
-  }).catch(response => { //Token invalid
-    logger.info(`POST /response from ${req.headers['x-forwarded-for'] || "localhost"} code 401`)
-    res.status(response.code).json({code: response.code, message: response.message})
-  })
-})
-app.get('/changelog/:id', (req, res) => {
-  let version = req.params.id
-  if(!fs.existsSync(`./changelogs/${version}.txt`)) return res.status(404).json({code: 404, message: "Not Found!"})
-  const data = fs.readFileSync(`./changelogs/${version}.txt`).toString()
-  res.json({code: 200, message: "Ok!", changelog: data})
-  logEndpointRequest('get', 'changelog', req)
-})
-app.get('/train/question', (req, res) => {
-  let randomQuestion = questions[Math.floor(Math.random() * questions.length)]
-
-  res.header("Access-Control-Allow-Origin", "*")
-  res.status(200).json({code: 200, message: "Ok!", question: randomQuestion})
-})
-app.post('/train', async (req, res) => {
-  let question = req.headers.question
-  let answer = req.headers.answer
-
-  data.push({q: question, a: answer})
-  res.header("Access-Control-Allow-Origin", "*")
-  res.status(200).json({code: 200, message: "Ok!"})
-
-  logger.info(`POST /train - {q: ${question}, a: ${answer}}`)
-})
-app.get('/train/save', (req, res) => {
-  fs.writeFileSync('data/answerdata.json', JSON.stringify(data))
-
-  res.header("Access-Control-Allow-Origin", "*")
-  res.status(200).json({code: 201, message: "Created!"})
+app.use(cors()) //for preflights and so on
+app.use(require('./utils/logEndpoint').log) //log request
+app.use(async (req, res, next) => { //verify token
+  if(!restricted.includes(req.path.split('?')[0])) return next()
+  if(await db.checkAPIToken(req.headers.token)) return next()
+  res.status(401).json({code: 401, message: "Invalid Token"})
 })
 
-//Log templates
-logEndpointRequest = (method, endpoint, req) => {
-  logger.info(`${method.toUpperCase()} /${endpoint} from ${req.headers['x-forwarded-for'] || "localhost"}`)
-}
+//special endpoints
+app.get('/changelog/:id', require('./controllers/changelog'))
 
-//Promises
-checkTokenPromise = async (token) => {
-  return new Promise(async (resolve, reject) => {
-    if(!await db.checkAPIToken(token)) return reject({code: 401, message: "Invalid Token."})
-    resolve({code: 200, message: "Ok!"})
-  })
-}
+app.use((req, res, next) => {
+  if(req.method.toUpperCase() !== "POST") return next()
+  require('./utils/post-handler')(req, res)
+}) //handle POST requests
+
+app.use(require('./utils/get-handler')) //handle GET requests
 
 ai.start().then(_=> {
   app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
