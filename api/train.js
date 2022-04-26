@@ -33,6 +33,6 @@ net.train(answerdata, {
 })
 
 pb.finished(startedDate)
-logger.info(`Finished training in ${(new Date - startedDate) / 1000}s`)
+logger.info(`Finished training in ${pb.calculateReadableTime(new Date - startedDate)}`)
 
 fs.writeFileSync('./data/data.json', JSON.stringify(net.toJSON()))
