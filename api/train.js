@@ -29,7 +29,8 @@ net.train(answerdata, {
     //render pb
     pb.render(d, startedDate, iterations)
   },
-  iterations
+  iterations,
+  logPeriod: 1
 })
 
 pb.finished(startedDate)
