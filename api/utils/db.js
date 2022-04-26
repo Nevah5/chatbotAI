@@ -34,9 +34,10 @@ exports.addAPIToken = token => {
 
 exports.saveMessage = (token, msg) => {
   return new Promise((resolve, reject) => {
+    let msg2 = msg.replace(/[\\$'"]/g, "\\$&")
     let con = mysql.createConnection(config)
     con.connect()
-    con.query(`INSERT INTO requests (tokenFK, msg) VALUES ((SELECT ID FROM apiTokens WHERE token='${token}'), '${msg}') RETURNING ID`, (err, results) => {
+    con.query(`INSERT INTO requests (tokenFK, msg) VALUES ((SELECT ID FROM apiTokens WHERE token='${token}'), '${msg2}') RETURNING ID`, (err, results) => {
       resolve(results[0].ID)
     })
     con.end()
@@ -44,9 +45,11 @@ exports.saveMessage = (token, msg) => {
 }
 
 exports.saveResponse = (id, msg) => {
+  let id2 = id.replace(/[\\$'"]/g, "\\$&")
+  let msg2 = msg.replace(/[\\$'"]/g, "\\$&")
   let con = mysql.createConnection(config)
   con.connect()
-  con.query(`UPDATE requests SET response='${msg}' WHERE ID=${id}`)
+  con.query(`UPDATE requests SET response='${msg2}' WHERE ID=${id2}`)
   con.end()
 }
 
