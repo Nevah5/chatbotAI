@@ -11,15 +11,10 @@ if(!fs.existsSync('./data/answerdata.json')){
   process.exit(1)
 }
 
-var trainingdata = []
-
 const answerdata = require('./data/answerdata.json')
-answerdata.forEach(data => {
-  trainingdata.push({input: data.q, output: data.a})
-})
 
 let startedDate = new Date
-net.train(trainingdata, {
+net.train(answerdata, {
   log: data => {
     //convert to object
     let iteration = data.split("iterations: ")[1].split(",")[0]
