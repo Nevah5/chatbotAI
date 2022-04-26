@@ -45,11 +45,10 @@ exports.saveMessage = (token, msg) => {
 }
 
 exports.saveResponse = (id, msg) => {
-  let id2 = id.replace(/[\\$'"]/g, "\\$&")
   let msg2 = msg.replace(/[\\$'"]/g, "\\$&")
   let con = mysql.createConnection(config)
   con.connect()
-  con.query(`UPDATE requests SET response='${msg2}' WHERE ID=${id2}`)
+  con.query(`UPDATE requests SET response='${msg2}' WHERE ID=${id}`)
   con.end()
 }
 
