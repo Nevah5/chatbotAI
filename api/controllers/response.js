@@ -6,6 +6,8 @@ const response = (req, res) => {
   let id = db.saveResponse(req.headers.token, input)
   ai.run(id, input).then(msg => { //get response from ai
     res.status(200).json({code: 200, message: "Ok!", response: msg})
+  }).catch(_ => { //network not trained
+    res.status(500).json({code: 500, message: "Network not trained."})
   })
 }
 
