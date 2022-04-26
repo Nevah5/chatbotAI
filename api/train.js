@@ -3,8 +3,9 @@ const brain = require('brain.js')
 const net = new brain.recurrent.LSTM()
 const logger = require('./utils/logger')
 const pb = require('./utils/progressbar')
+require('dotenv').config()
 
-var iterations = 5000
+var iterations = process.env.AI_ITERATIONS
 
 if(!fs.existsSync('./data/answerdata.json')){
   logger.error("No data (answerdata.json)")
