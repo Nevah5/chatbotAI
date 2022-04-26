@@ -92,6 +92,8 @@ onApiVersionChange = async (client, newApiVersion) => {
     //update last api version in database
     await db.updateConfigValue('api-lastversion', newApiVersion)
     cache.setCache('api-lastversion', newApiVersion)
+  }).catch(_ => {
+    logger.error("API did not respond on GET /changelog"+newApiVersion)
   })
 }
 
