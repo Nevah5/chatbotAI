@@ -11,6 +11,11 @@ if(!fs.existsSync('./data/answerdata.json')){
   process.exit(1)
 }
 
+if(fs.existsSync('./data/data.json')){
+  logger.error("Network already trained")
+  process.exit(1)
+}
+
 const answerdata = require('./data/answerdata.json')
 
 let startedDate = new Date
