@@ -23,8 +23,6 @@ exports.start = _ => {
 
 exports.run = async (id, input) => {
   return new Promise(async (resolve, reject) => {
-    if(!isTrained) return reject()
-
     let filtered = input.replace(/[^a-zA-Z0-9!? ]/, "").toLowerCase()
     let response = net.run(filtered)
 
@@ -33,3 +31,5 @@ exports.run = async (id, input) => {
     resolve(response)
   })
 }
+
+exports.isTrained = _ => { return isTrained }
