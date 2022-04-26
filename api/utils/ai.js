@@ -2,6 +2,7 @@ const fs = require('fs')
 const logger = require('../utils/logger')
 const brain = require('brain.js')
 const net = new brain.recurrent.LSTM()
+const db = require('../utils/db')
 
 exports.start = _ => {
   return new Promise((resolve, reject) => {
@@ -14,5 +15,16 @@ exports.start = _ => {
       logger.info("Network not trained.")
     }
     resolve()
+  })
+}
+
+exports.run = async (id, input) => {
+  return new Promise(async (resolve, reject) => {
+    let filtered = input.replace(/[^a-zA-Z0-9!? ]/, "").toLowerCase()
+    let response = net.run(filtered)
+
+    db.saveResponse(id, response)
+
+    resolve(response)
   })
 }

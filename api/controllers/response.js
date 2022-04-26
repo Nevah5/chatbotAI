@@ -1,7 +1,10 @@
 const ai = require('../utils/ai')
+const db = require('../utils/db')
 
 const response = (req, res) => {
-  ai.run(req.headers.token, req.headers.message).then(msg => { //get response from ai
+  let input = req.headers.message
+  let id = db.saveResponse(req.headers.token, input)
+  ai.run(id, input).then(msg => { //get response from ai
     res.status(200).json({code: 200, message: "Ok!", response: msg})
   })
 }
