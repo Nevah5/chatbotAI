@@ -28,6 +28,7 @@ exports.run = async (token, input) => {
 
     db.saveResponse(token, filtered, response)
 
+    response = response == "" ? "I don't know how to respond to that." : response
     resolve(response)
   })
 }
