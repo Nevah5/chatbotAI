@@ -86,7 +86,7 @@ Should return "200 - Ok!" with the changelog field. If the changelog does not ex
 
 This endpoint is specifically for training. It gives you a possible user question to the AI that you can answer with /train.
 
-Should return "200 - Ok!" with the "question" field.
+Should return "200 - Ok!" with the "question" field. 423 when there is no question left to answer.
 
 ### POST /train
 
