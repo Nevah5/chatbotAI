@@ -21,12 +21,12 @@ exports.start = _ => {
   })
 }
 
-exports.run = async (id, input) => {
+exports.run = async (token, input) => {
   return new Promise(async (resolve, reject) => {
     let filtered = input.replace(/[^a-zA-Z0-9!? ]/, "").toLowerCase()
     let response = net.run(filtered)
 
-    db.saveResponse(id, response)
+    db.saveResponse(token, filtered, response)
 
     resolve(response)
   })
