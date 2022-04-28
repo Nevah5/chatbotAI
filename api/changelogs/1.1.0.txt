@@ -1,0 +1,1 @@
++ Updated database module to work with mariaDB 10.3
