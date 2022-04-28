@@ -8,6 +8,7 @@ class App extends Component {
     messages: [],
     toastState: "none",
     toastStateNetworkError: "none",
+    toastStateNoQuestion: "none",
     delay: true,
     loading: true,
     lastQuestion: "",
@@ -69,6 +70,13 @@ class App extends Component {
         >
           <span>No internet or API is offline.</span>
         </div>
+        <div
+          className="toast"
+          id="noquestion"
+          style={{ display: this.state.toastStateNoQuestion }}
+        >
+          <span>No question left to answer.</span>
+        </div>
       </React.Fragment>
     );
   }
@@ -82,6 +90,8 @@ class App extends Component {
     let response = await fetch(`${url}/train/question`).catch((_) => {
       this.setState({ toastStateNetworkError: "initial" });
     });
+    if (response.status === 423)
+      this.setState({ toastStateNoQuestion: "initial" });
     let data = await response.json();
 
     this.setState({
