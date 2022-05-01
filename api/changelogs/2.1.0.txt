@@ -1,0 +1,4 @@
++ New trained AI
++ Same training data as version 2.0.0
++ 100000 iterations instead of 20000
++ 22860 seconds of training (1h 13m 55s)
