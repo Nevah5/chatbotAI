@@ -8,3 +8,11 @@ do{
 } while (i != "q");
 
 fs.writeFileSync('questiondata.json', JSON.stringify(arr))
+
+
+//greetings
+//farewells
+//reactions
+//feeling questions
+//feeling statements
+//weird questions
