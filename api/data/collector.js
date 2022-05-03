@@ -9,3 +9,5 @@ do{
 
 var filename = prompt("File name >>> ")
 fs.writeFileSync(filename+".json", JSON.stringify(arr))
+
+require('./compressor').compress() //compress all files to single file
