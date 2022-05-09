@@ -2,7 +2,8 @@ import spacy
 spacy.load('en_core_web_sm')
 
 from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer
+# from chatterbot.trainers import ListTrainer
+from chatterbot.trainers import ChatterBotCorpusTrainer
 
 bot = ChatBot(
     'Bot',
@@ -11,15 +12,18 @@ bot = ChatBot(
         'database_uri': 'sqlite:///ai.db'
     },
     logic_adapters=[
-        'chatterbot.logic.MathematicalEvaluation',
+        # 'chatterbot.logic.MathematicalEvaluation',
         #'chatterbot.logic.TimeLogicAdapter',
         'chatterbot.logic.BestMatch'
     ]
 )
 
-trainer = ListTrainer(bot)
+# trainer = ListTrainer(bot)
+trainer = ChatterBotCorpusTrainer(bot)
+trainer.train('chatterbot.corpus.english')
+# trainer.train("./data/conversations.yml")
 
-trainer.train("./data/")
+#trainer.export_for_training('./exported_conversation.json')
 
 while True:
     inp = input("User: ")
