@@ -2,7 +2,9 @@ import spacy
 spacy.load('en_core_web_sm')
 
 from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
 from chatterbot.conversation import Statement
+
 
 bot = ChatBot(
     'Bot',
@@ -14,6 +16,10 @@ bot = ChatBot(
         'chatterbot.logic.BestMatch'
     ]
 )
+
+if "yes" == input("Do you want to train the bot?"):
+    trainer = ChatterBotCorpusTrainer(bot)
+    trainer.train('chatterbot.corpus.english')
 
 def get_feedback():
 
