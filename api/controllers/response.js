@@ -1,5 +1,6 @@
 const {spawn} = require("child_process");
 const validator = require('../utils/validator')
+const db = require("../utils/db")
 
 const response = async (req, res) => {
   let input = req.headers.message
@@ -10,6 +11,7 @@ const response = async (req, res) => {
     var textChunk = chunk.toString('utf8');
 
     res.status(200).json({code: 200, message: "Ok!", response: textChunk})
+    db.saveResponse(req.headers.token, input, textChunk);
   });
 }
 
