@@ -1,11 +1,9 @@
-var spawn = require("child_process").spawn;
+const {spawn} = require("child_process");
 
-var process = spawn('python',["chatbot.py", "hello!"]);
+var process = spawn('python3.7', ["chatbot.py", "hello"]);
 
-process.stdout.on('data', async (chunk) => {
-  var textChunk = await chunk.toString('utf8');// buffer to string
+process.stdout.on('data', (chunk) => {
+  var textChunk = chunk.toString('utf8');
 
   console.log(textChunk);
 });
-
-console.log("a");
