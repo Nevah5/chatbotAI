@@ -16,4 +16,4 @@ bot = ChatBot(
     read_only=True
 )
 
-print(bot.get_response(sys.argv[1]))
+print(bot.get_response(sys.argv[1]), end="")
