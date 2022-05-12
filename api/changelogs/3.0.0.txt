@@ -1,3 +1,0 @@
-+ First version of trained API
-+ ~ 120 datasets
-+ 9h 4m 16s of training (32656 seconds)
