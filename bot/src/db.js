@@ -10,6 +10,15 @@ var config = {
   charset: 'utf8'
 }
 
+//test on start if database works
+try {
+  let con = mysql.createConnection(config)
+  con.connect()
+  con.end()
+} catch(e) {
+  logger.error(e)
+}
+
 exports.getConfigValue = (id) => {
   return new Promise((resolve, reject) => {
     let con = mysql.createConnection(config)
