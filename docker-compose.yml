@@ -1,6 +1,18 @@
 version: "3.3"
 
 services:
+  python:
+    container_name: pythonAI
+    build:
+      context: .
+      dockerfile: ./.docker/python.dockerfile
+    restart: "no"
+    environment:
+      APP_NAME: chatbotAI
+    stdin_open: true
+    tty: true
+    ports:
+      - '3001:12345'
   nodejs:
     container_name: nodejsAPI
     build:
@@ -25,15 +37,3 @@ services:
       APP_NAME: chatbotAI
     stdin_open: true
     tty: true
-  python:
-    container_name: pythonAI
-    build:
-      context: .
-      dockerfile: ./.docker/python.dockerfile
-    restart: "no"
-    environment:
-      APP_NAME: chatbotAI
-    stdin_open: true
-    tty: true
-    ports:
-      - '3001:12345'
