@@ -1,7 +1,7 @@
 FROM node:16
 WORKDIR /usr/src/chatbotAI/nodejsAPI
-COPY package*.json ./
+COPY ./api/package*.json .
 RUN npm install
-COPY api/ .
+COPY ./api/ .
 EXPOSE 3000
-CMD [ "node", "index.js" ]
+CMD [ "node", "." ]
