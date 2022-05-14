@@ -6,13 +6,12 @@ services:
     build:
       context: .
       dockerfile: ./.docker/node.dockerfile
-    restart: unless-stopped
-    user: "node"
+    restart: "no"
     env_file: ./api/.env
     environment:
-      APP_NAME: chatbotAPI
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+      APP_NAME: chatbotAI
+    stdin_open: true
+    tty: true
     ports:
       - '3000:3000'
   bot:
@@ -20,23 +19,21 @@ services:
     build:
       context: .
       dockerfile: ./.docker/discord.dockerfile
-    restart: unless-stopped
-    user: "discordbot"
+    restart: "no"
     env_file: ./bot/.env
     environment:
-      APP_NAME: chatbotAPI
+      APP_NAME: chatbotAI
     stdin_open: true
     tty: true
   python:
     container_name: pythonAI
     build:
       context: .
-      dockerfile: ./.docker/node.dockerfile
-    restart: unless-stopped
-    user: "python"
+      dockerfile: ./.docker/python.dockerfile
+    restart: "no"
     environment:
-      APP_NAME: chatbotAPI
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+      APP_NAME: chatbotAI
+    stdin_open: true
+    tty: true
     ports:
-      - '12345:12345'
+      - '3001:12345'
