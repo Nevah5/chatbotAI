@@ -1,7 +1,6 @@
 FROM node:16
-WORKDIR /usr/src/chatbotAI/discordbot
-COPY package*.json ./
+WORKDIR /usr/src/chatbotAI/nodejsAPI
+COPY ./bot/package*.json .
 RUN npm install
-COPY bot/ .
-EXPOSE 3000
-CMD [ "node", "index.js" ]
+COPY ./bot/ .
+CMD [ "node", "." ]
