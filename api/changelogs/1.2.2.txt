@@ -1,1 +1,0 @@
-+ Fixed AI not responding on not good enough AI
