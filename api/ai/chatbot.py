@@ -4,7 +4,6 @@ nlp = spacy.load("en_core_web_sm")
 from xmlrpc.server import SimpleXMLRPCServer
 from chatterbot import ChatBot
 
-argumentList = sys.argv
 hostAddress = '0.0.0.0'
 port = '12345'
 server = SimpleXMLRPCServer((hostAddress, int(port)))
@@ -21,8 +20,11 @@ bot = ChatBot(
     read_only=True
 )
 
-def run():
-    return bot.get_response(argumentList[1])
+def run(input):
+    print(f'input: {input}')
+    output = bot.get_response(input)
+    print(f'output: {output}')
+    return output
 
 server.register_function(run)
 server.serve_forever()
