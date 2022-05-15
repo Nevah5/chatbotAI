@@ -26,3 +26,4 @@ def run():
 
 server.register_function(run)
 server.serve_forever()
+print(f'Listening on port {port}')
