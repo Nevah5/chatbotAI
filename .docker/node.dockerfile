@@ -1,5 +1,5 @@
 FROM node:16
-WORKDIR /usr/src/chatbotAI/nodejsAPI
+WORKDIR /opt/chatbotAI/nodejsAPI
 COPY ./api/package*.json .
 RUN npm install
 COPY ./api/ .
