@@ -10,7 +10,7 @@ const response = async (req, res) => {
 
   //TODO: filter input
   var client = xmlrpc.createClient({ host: process.env.XMLRPC_HOST, port: process.env.XMLRPC_PORT, path: '/'})
-  client.methodCall('run', input, function (error, value) {
+  client.methodCall('run', [input], function (error, value) {
     res.status(200).json({code: 200, message: "Ok!", response: value})
     db.saveResponse(req.headers.token, input, value);
   })
