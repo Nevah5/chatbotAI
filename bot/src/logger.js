@@ -2,7 +2,6 @@
 // https://github.com/foxfabi
 
 const { createLogger, format, transports } = require('winston');
-const production = process.env.PRODUCTION === 'true' ? true : false;
 
 const defaultFormat = format.combine(
   format.splat(),
@@ -46,13 +45,11 @@ const logger = createLogger({
 });
 
 // If we're not in production then log to the `console`
-if (!production) {
-  logger.add(
-    new transports.Console({
-      format: format.combine(format.colorize(), defaultFormat),
-    }),
-  );
-}
+logger.add(
+  new transports.Console({
+    format: format.combine(format.colorize(), defaultFormat),
+  }),
+);
 
 // By default, morgan outputs to the console only, so let’s define a stream function
 // that will be able to get morgan-generated output into the winston log files.
