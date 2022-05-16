@@ -1,3 +1,2 @@
-+ First version of trained API
-+ 470 datasets
-+ 5 hours and 9 minutes of training
+- Brain.js Artificial Intelligence
++ Artificial Intelligence with Python Chatterbot

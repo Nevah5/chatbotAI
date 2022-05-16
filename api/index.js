@@ -2,7 +2,6 @@ var express = require('express')
 var app = express()
 require('dotenv').config()
 const {API_PORT} = process.env
-const ai = require('./utils/ai')
 const cors = require('cors')
 const fs = require('fs')
 
@@ -33,6 +32,4 @@ app.use((req, res, next) => {
 
 app.use(require('./utils/get-handler')) //handle GET requests
 
-ai.start().then(_=> {
-  app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))
-})
+app.listen(API_PORT, logger.info(`Listening on http(s)://localhost:${API_PORT}/`))

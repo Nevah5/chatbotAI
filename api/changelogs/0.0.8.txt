@@ -1,4 +1,0 @@
-+ Added new Authenticator
-+ Added error middleware
-+ Moved Authenticator into own module
-+ Moved Endpoint-Logger into own module
