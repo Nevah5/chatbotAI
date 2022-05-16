@@ -21,10 +21,8 @@ bot = ChatBot(
 )
 
 def run(input):
-    print(f'input: {input}')
     output = bot.get_response(input)
-    print(f'output: {output}')
-    return output
+    return str(output)
 
 server.register_function(run)
 server.serve_forever()
