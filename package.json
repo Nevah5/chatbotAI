@@ -4,8 +4,9 @@
   "description": "This project is a chatbotAI with an API and a dedicated discord bot that talks with it. The bot sends the message from the user to the API where the AI generates a response.",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,11 @@
   "homepage": "https://github.com/Nevah5/chatbotAI#readme",
   "dependencies": {
     "@types/node": "^18.11.10",
+    "axios": "^1.2.1",
     "dotenv": "^16.0.3",
     "openai": "^3.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
   }
 }
