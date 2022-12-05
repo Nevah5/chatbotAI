@@ -1,0 +1,26 @@
+{
+  "name": "chatbotai",
+  "version": "1.0.0",
+  "description": "This project is a chatbotAI with an API and a dedicated discord bot that talks with it. The bot sends the message from the user to the API where the AI generates a response.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nevah5/chatbotAI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nevah5/chatbotAI/issues"
+  },
+  "homepage": "https://github.com/Nevah5/chatbotAI#readme",
+  "dependencies": {
+    "@types/node": "^18.11.10",
+    "dotenv": "^16.0.3",
+    "openai": "^3.1.0"
+  }
+}
