@@ -6,7 +6,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "run": "ts-node-esm ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -20,12 +21,9 @@
   },
   "homepage": "https://github.com/Nevah5/chatbotAI#readme",
   "dependencies": {
-    "@types/node": "^18.11.10",
     "axios": "^1.2.1",
+    "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "openai": "^3.1.0"
-  },
-  "devDependencies": {
-    "typescript": "^4.9.3"
   }
 }
